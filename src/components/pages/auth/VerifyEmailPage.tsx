@@ -23,9 +23,7 @@ const VerifyEmail: React.FC = () => {
             try {
                 const response = await verifyEmail(encodedToken);
 
-                console.log(response);
-
-                if (response.success) {
+                if (response.success = true) {
                     setStatus('success');
                     Swal.fire({
                         icon: 'success',

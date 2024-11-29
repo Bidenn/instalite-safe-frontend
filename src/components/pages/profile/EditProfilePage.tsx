@@ -67,7 +67,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
         }
 
         try {
-            const result = await updateUserData(token, formData);
+            const result = await updateUserData(formData);
             if (result.error) throw new Error(result.error);
 
             alert('Profile updated successfully!');

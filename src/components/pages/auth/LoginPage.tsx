@@ -3,6 +3,7 @@ import pic4 from '../../assets/images/login/pic4.jpg';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../../apis/AuthApi';
 import { fetchUserDataWithoutPosts } from '../../../apis/UserApi';
+import Swal from 'sweetalert2';
 
 interface FormData {
     UsernameOrEmail: string;
@@ -32,44 +33,58 @@ const Login: React.FC = () => {
         e.preventDefault();
         setMessage(''); // Clear any previous message
     
-        console.log('Form submitted with:', formData); // Debug: Log form data
-    
         try {
-            console.log('Attempting login...'); // Debug: Indicate login attempt
             const loginResponse = await login(formData);
-            console.log('Login response:', loginResponse); // Debug: Log login response
     
             if (loginResponse.message === "Login successful" && loginResponse.token) {
-                // Save the token to localStorage
                 localStorage.setItem('token', loginResponse.token);
     
                 const userResponse = await fetchUserDataWithoutPosts(loginResponse.token);
     
                 if ('error' in userResponse) {
-                    console.error('Error fetching user data:', userResponse.error); // Debug: Log user data fetch error
-                    setMessage(userResponse.error || 'Failed to fetch user data.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: userResponse.error || 'Failed to fetch user data.',
+                    });
                     return;
                 }
     
                 const username = userResponse.username;
     
-                // Navigate based on whether user data exists
                 if (username) {
-                    console.log('Navigating to /home'); // Debug: Indicate navigation
-                    navigate('/home');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: 'Welcome back!',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    }).then(() => navigate('/home'));
                 } else {
-                    console.log('Navigating to /create-profile'); // Debug: Indicate navigation
-                    navigate('/create-profile');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'New Account Detected',
+                        text: 'Please complete your profile.',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    }).then(() => navigate('/create-profile'));
                 }
             } else {
-                console.warn('Login failed:', loginResponse.error); // Debug: Log login failure
-                setMessage(loginResponse.error ?? 'Login failed. Please check your credentials.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: loginResponse.error ?? 'Invalid username or password.',
+                });
             }
         } catch (error) {
-            console.error('Error during login or fetching user data:', error); // Debug: Catch unexpected errors
-            setMessage('An unexpected error occurred. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Unexpected Error',
+                text: 'An unexpected error occurred. Please try again.',
+            });
         }
     };
+    
     
 
     return (

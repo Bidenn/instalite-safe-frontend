@@ -17,8 +17,6 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
     
-    const token2 = localStorage.getItem('token');
-
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -99,7 +97,7 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
         }
 
         try {
-            const result = await updateUserData(token2, formData);
+            const result = await updateUserData(formData);
             if (result.error) throw new Error(result.error);
 
             // SweetAlert success notification
