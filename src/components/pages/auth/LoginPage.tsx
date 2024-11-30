@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import pic4 from '../../assets/images/login/pic4.jpg';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../../apis/AuthApi';
-import { fetchUserDataWithoutPosts } from '../../../apis/UserApi';
+import { fetchProfileDataForEdit } from '../../../apis/ProfileApi';
 import Swal from 'sweetalert2';
 
 interface FormData {
@@ -33,13 +33,13 @@ const Login: React.FC = () => {
         e.preventDefault();
         setMessage(''); // Clear any previous message
     
+        const loginResponse = await login(formData);
+
         try {
-            const loginResponse = await login(formData);
-    
             if (loginResponse.message === "Login successful" && loginResponse.token) {
                 localStorage.setItem('token', loginResponse.token);
     
-                const userResponse = await fetchUserDataWithoutPosts(loginResponse.token);
+                const userResponse = await fetchProfileDataForEdit(loginResponse.token);
     
                 if ('error' in userResponse) {
                     Swal.fire({
@@ -50,7 +50,7 @@ const Login: React.FC = () => {
                     return;
                 }
     
-                const username = userResponse.username;
+                const username = userResponse.user.username;
     
                 if (username) {
                     Swal.fire({

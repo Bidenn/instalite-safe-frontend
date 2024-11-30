@@ -1,36 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
-import { fetchUserDataWithoutPosts, updateUserData, checkUsernameAvailability } from '../../../apis/UserApi'; // Adjust the path accordingly
+import { fetchProfileDataForEdit, updateProfileData, checkUsernameAvailability } from '../../../apis/ProfileApi'; // Adjust the path accordingly
 import nullPhoto from '../../assets/images/avatar/NullUserPhoto.png';
 import { useNavigate } from 'react-router-dom';
 
 const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
+    const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
     const [fullName, setFullName] = useState('');
     const [bio, setBio] = useState('');
     const [career, setCareer] = useState('');
-    const [profilePhoto, setProfilePhoto] = useState<File | null>(null); // for profile photo upload
+    const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview state
+    const [imagePreview, setImagePreview] = useState<string>(nullPhoto);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const result = await fetchUserDataWithoutPosts(token);
-                if ('error' in result) {
-                    // Handle error response
-                    setError(result.error || null);
-                } else {
-                    // Type-safe access to properties
-                    setUsername(result.username);
-                    setFullName(result.fullName);
-                    setBio(result.aboutMe || '');
-                    setCareer(result.career || '');
-                }
+                const result = await fetchProfileDataForEdit(token);
+                setEmail(result.user.email || ''); // Hanya menampilkan email
+                setUsername(result.user.username || '');
+                setFullName(result.fullName || '');
+                setBio(result.aboutMe || '');
+                setCareer(result.career || '');
             } catch (err) {
                 setError('Failed to fetch user data');
             }
@@ -38,111 +34,105 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
         fetchProfile();
     }, [token]);
 
+
     const handleUsernameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Convert input to lowercase
         const value = e.target.value.toLowerCase();
-    
-        // Validate that the username only contains allowed characters
-        const isValid = /^[a-z0-9._]*$/.test(value); // Adjusted regex to lowercase only
+        const isValid = /^[a-z0-9._]*$/.test(value);
+
         if (!isValid) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Username',
-                text: 'Username can only contain lowercase alphabets, numbers, dots, and underscores.',
+                text: 'Username can only contain lowercase letters, numbers, dots, and underscores.',
             });
-            return; // Prevent further processing
+            return;
         }
-    
+
         setUsername(value);
-    
         if (value.length > 2) {
-            const result = await checkUsernameAvailability(value);
-            setIsAvailable(result.available);
+            try {
+                const result = await checkUsernameAvailability(value);
+                setIsAvailable(result.available);
+            } catch {
+                setIsAvailable(null);
+            }
         } else {
             setIsAvailable(null);
         }
     };
 
-    const handleChangeProfilePhoto = () => {
-        fileInputRef.current?.click();
-    };
+    const handleChangeProfilePhoto = () => fileInputRef.current?.click();
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setProfilePhoto(file);
-            setImagePreview(URL.createObjectURL(file));
-        }
-    };
+        if (!file) return;
 
-    const handleFormSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!username) {
+        if (!file.type.startsWith('image/')) {
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Username is required',
+                title: 'Invalid File',
+                text: 'Please upload a valid image file.',
             });
             return;
         }
 
-        // Prepare form data for profile update
-        const formData = new FormData();
-        formData.append('username', username);
-        formData.append('fullName', fullName);
-        formData.append('bio', bio);
-        formData.append('career', career);
-        if (profilePhoto) {
-            formData.append('profilePhoto', profilePhoto);
+        if (file.size > 5 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Too Large',
+                text: 'Image size should not exceed 5MB.',
+            });
+            return;
+        }
+
+        setProfilePhoto(file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!username) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Information',
+                text: 'Username is required.',
+            });
+            return;
         }
 
         try {
-            const result = await updateUserData(formData);
-            if (result.error) throw new Error(result.error);
+            const profileData = new FormData();
+            profileData.append('username', username);
+            profileData.append('fullName', fullName);
+            profileData.append('bio', bio);
+            profileData.append('career', career);
+            if (profilePhoto) profileData.append('profilePhoto', profilePhoto);
 
-            // SweetAlert success notification
+            await updateProfileData(profileData); // Tidak mengirimkan email
+
             Swal.fire({
                 icon: 'success',
                 title: 'Profile Updated',
-                text: 'Your profile has been updated successfully!',
+                text: 'Your profile has been updated successfully.',
                 confirmButtonText: 'Go to Profile',
-            }).then(() => navigate('/profile')); // Navigate after success
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: err.message || 'Failed to update profile',
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Unknown Error',
-                    text: 'An unknown error occurred',
-                });
-            }
+            }).then(() => navigate('/profile'));
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to update profile. Please try again.',
+            });
         }
     };
 
     return (
-        <div className="page-wraper header-fixed">
+        <div className="page-wrapper header-fixed">
             <header className="header bg-white">
                 <div className="container">
                     <div className="main-bar">
-                        <div className="left-content">
-                            {/* <a href="#" className="back-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                            </a> */}
-                            <h4 className="title mb-0">Create Profile</h4>
-                        </div>
-                        <div className="mid-content"></div>
-                        <div className="right-content">
-                            {/* <a href="#" className="text-dark font-20">
-                                <i className="fa-solid fa-check"></i>
-                            </a> */}
+                        <div className="mid-content">
+                            <h4 className="title mb-0">Create profile</h4>
                         </div>
                     </div>
                 </div>
@@ -151,10 +141,10 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
                 <div className="container">
                     <div className="edit-profile">
                         <div className="profile-image">
-                            <div className="media media-100 rounded-circle">
-                                <img src={imagePreview || nullPhoto} alt="Profile" />
-                            </div>
-                            <a href="javascript:void(0);" onClick={handleChangeProfilePhoto}>Change profile photo</a>
+                            <img src={imagePreview} alt="Profile" className="media media-100 rounded-circle" />
+                            <a href="#" onClick={handleChangeProfilePhoto}>
+                                Change Profile Photo
+                            </a>
                             <input
                                 type="file"
                                 ref={fileInputRef}
@@ -164,51 +154,57 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
                             />
                         </div>
                         <form onSubmit={handleFormSubmit}>
-                            <div className="mb-3 input-group input-mini">
+                            <div className="mb-3">
                                 <input
                                     type="text"
-                                    name="username"
+                                    className="form-control"
+                                    value={email}
+                                    disabled // Email hanya ditampilkan, tidak bisa diubah
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <input
+                                    type="text"
                                     className="form-control"
                                     placeholder="Username"
                                     value={username}
                                     onChange={handleUsernameChange}
                                 />
-                            </div>
-                            {isAvailable === null ? null : isAvailable ? (
+                                {isAvailable === null ? null : isAvailable ? (
                                     <span style={{ color: 'green' }}>Username is available</span>
                                 ) : (
                                     <span style={{ color: 'red' }}>Username is taken</span>
                                 )}
-                            <div className="mb-3 input-group input-mini">
+                            </div>
+                            <div className="mb-3">
                                 <input
                                     type="text"
-                                    name="fullName"
                                     className="form-control"
                                     placeholder="Full Name"
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
                                 />
                             </div>
-                            <div className="mb-3 input-group input-mini">
+                            <div className="mb-3">
                                 <input
                                     type="text"
-                                    name="career"
                                     className="form-control"
                                     placeholder="Career"
                                     value={career}
                                     onChange={(e) => setCareer(e.target.value)}
                                 />
                             </div>
-                            <div className="mb-3 input-group input-mini">
+                            <div className="mb-3">
                                 <textarea
-                                    name="bio"
                                     className="form-control"
                                     placeholder="About Me"
                                     value={bio}
                                     onChange={(e) => setBio(e.target.value)}
                                 />
                             </div>
-                            <button type="submit" className="btn btn-primary">Save Profile</button>
+                            <button type="submit" className="btn btn-primary">
+                                Save Profile
+                            </button>
                         </form>
                     </div>
                 </div>

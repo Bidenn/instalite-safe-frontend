@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchUserDataWithoutPosts, updateUserData, checkUsernameAvailability } from '../../../apis/UserApi'; // Adjust the path accordingly
+import { fetchProfileDataForEdit, updateProfileData, checkUsernameAvailability } from '../../../apis/ProfileApi'; // Adjust the path accordingly
 
 const EditProfile: React.FC<{ token: string }> = ({ token }) => {
     const [username, setUsername] = useState('');
@@ -14,7 +14,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const result = await fetchUserDataWithoutPosts(token);
+                const result = await fetchProfileDataForEdit(token);
                 if ('error' in result) {
                     // Handle error response
                     setError(result.error || null); // Ensure we pass either a string or null
@@ -67,7 +67,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
         }
 
         try {
-            const result = await updateUserData(formData);
+            const result = await updateProfileData(formData);
             if (result.error) throw new Error(result.error);
 
             alert('Profile updated successfully!');

@@ -48,7 +48,7 @@ const CreatePost: React.FC = () => {
         formData.append('content', selectedImage); // Attach image file
 
         try {
-            const response = await storePost(formData, token); // Send formData with token
+            const response = await storePost(formData); // Send formData with token
             if (response.error) {
                 alert("Failed to create post. Please try again.");
             } else {

@@ -5,7 +5,7 @@ import Story from './Story';
 import Postcard from '../post/PostcardComponents';
 import Menubar from '../shared/Menubar';
 
-import { fetchHomepagePosts } from '../../../apis/HomepageApi';
+import { fetchHomepageData } from '../../../apis/HomepageApi';
 
 const Homepage: React.FC = () => {
   const [posts, setPosts] = useState<any[]>([]); // State to store posts
@@ -23,7 +23,7 @@ const Homepage: React.FC = () => {
       }
 
       try {
-        const response = await fetchHomepagePosts(token); // Pass token to API function
+        const response = await fetchHomepageData(token); // Pass token to API function
         if ('error' in response) {
           setError(response.error); // Set error message
         } else {

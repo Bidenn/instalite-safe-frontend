@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api/profile'; // Update with your API base URL
 
+const getAuthToken = (): string | null => {
+    return localStorage.getItem('token'); // Retrieve token stored as 'token' in localStorage
+};
+
 // Fetch profile data for editing
 export const fetchProfileDataForEdit = async (token: string) => {
     try {
@@ -31,25 +35,11 @@ export const fetchProfileWithPosts = async (token: string) => {
 };
 
 // Update user profile data
-export const updateProfileData = async (
-    token: string,
-    profileData: {
-        username?: string;
-        fullName?: string;
-        bio?: string;
-        career?: string;
-        profilePhoto?: File | null; // Optional profile photo
-    }
-) => {
+export const updateProfileData = async (formData: FormData) => {
     try {
-        const formData = new FormData();
-        if (profileData.username) formData.append('username', profileData.username);
-        if (profileData.fullName) formData.append('fullName', profileData.fullName);
-        if (profileData.bio) formData.append('bio', profileData.bio);
-        if (profileData.career) formData.append('career', profileData.career);
-        if (profileData.profilePhoto) formData.append('profilePhoto', profileData.profilePhoto);
+        const token = getAuthToken();
 
-        const response = await axios.put(`${API_BASE_URL}/update`, formData, {
+        const response = await axios.post(`${API_BASE_URL}/update`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
@@ -58,7 +48,7 @@ export const updateProfileData = async (
 
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.error || 'Failed to update profile');
+        throw new Error(error.response?.data?.error || 'Failed to send profile data');
     }
 };
 

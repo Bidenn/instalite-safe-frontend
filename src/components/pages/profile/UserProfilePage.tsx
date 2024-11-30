@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../assets/css/style.css';
 import nullPhoto from '../../assets/images/avatar/NullUserPhoto.png';
 import Menubar from '../shared/Menubar';
-import { fetchUserDataWithPosts } from '../../../apis/UserApi'; 
+import { fetchProfileWithPosts } from '../../../apis/ProfileApi'; 
 
 interface UserData {
     username?: string;
@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
         } else {
             const loadUserData = async () => {
                 try {
-                    const data = await fetchUserDataWithPosts(token);
+                    const data = await fetchProfileWithPosts(token);
     
                     console.log(data); 
     
