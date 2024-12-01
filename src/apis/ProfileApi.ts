@@ -39,7 +39,7 @@ export const updateProfileData = async (formData: FormData) => {
     try {
         const token = getAuthToken();
 
-        const response = await axios.post(`${API_BASE_URL}/update`, formData, {
+        const response = await axios.put(`${API_BASE_URL}/update`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
