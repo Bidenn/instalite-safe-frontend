@@ -14,6 +14,8 @@ import ProtectedRoute from './components/utils/ProtectedRoute';
 import IdleTimer from './components/utils/IdleTimer';
 import VerifyEmail from './components/pages/auth/VerifyEmailPage';
 import CreateProfile from './components/pages/profile/CreateProfilePage';
+import PublicProfile from './components/pages/public/PublicProfilePage';
+import SearchPublicProfile from './components/pages/public/SearchPublicProfilePage';
 
 function App() {
     const token = localStorage.getItem('token'); // Retrieve the token from localStorage or other storage
@@ -35,9 +37,11 @@ function App() {
                         <Route element={<ProtectedRoute />}>
                             <Route path="/home" element={<Homepage />} />
                             <Route path="/profile" element={<UserProfile />} />
+                            <Route path="/search" element={<SearchPublicProfile />} />
+                            <Route path="/profile/:username" element={<PublicProfile />} />
                             <Route path="/create-post" element={<CreatePost />} />
-                            <Route path="/profile/edit" element={<EditProfile token={token!} />} /> {/* Passing token here */}
-                            <Route path="/post-detail" element={<PostDetail />} />
+                            <Route path="/profile/edit" element={<EditProfile token={token!}/>} /> {/* Passing token here */}
+                            <Route path="/posts/:postId" element={<PostDetail />} />
                         </Route>
 
                         {/* Non-protected Route for creating profile */}

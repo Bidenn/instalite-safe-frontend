@@ -7,12 +7,12 @@ const Menubar = () => {
     return (
         <div className="menubar-area">
             <div className="toolbar-inner menubar-nav">
-                <Link to="/Home" className={`nav-link ${location.pathname === '/Home' ? 'active' : ''}`}>
+                <Link to="/home" className={`nav-link ${location.pathname === '/home' ? 'active' : ''}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none">
                         <path d="M21.44 11.035a.75.75 0 0 1-.69.465H18.5V19a2.25 2.25 0 0 1-2.25 2.25h-3a.75.75 0 0 1-.75-.75V16a.75.75 0 0 0-.75-.75h-1.5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 1-.75.75h-3A2.25 2.25 0 0 1 3.5 19v-7.5H1.25a.75.75 0 0 1-.69-.465.75.75 0 0 1 .158-.818l9.75-9.75A.75.75 0 0 1 11 .246a.75.75 0 0 1 .533.222l9.75 9.75a.75.75 0 0 1 .158.818z" fill="#b5b5b5" />
                     </svg>
                 </Link>
-                <Link to="#" className={`nav-link ${location.pathname === '/search' ? 'active' : ''}`}>
+                <Link to="/search" className={`nav-link ${location.pathname === '/search' ? 'active' : ''}`}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#b5b5b5" strokeOpacity="1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                         <path d="M21 21L16.65 16.65" stroke="#b5b5b5" strokeOpacity="1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />

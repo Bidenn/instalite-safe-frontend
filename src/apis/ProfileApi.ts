@@ -7,8 +7,9 @@ const getAuthToken = (): string | null => {
 };
 
 // Fetch profile data for editing
-export const fetchProfileDataForEdit = async (token: string) => {
+export const fetchProfileDataForEdit = async () => {
     try {
+        const token = getAuthToken();
         const response = await axios.get(`${API_BASE_URL}/edit`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -21,8 +22,9 @@ export const fetchProfileDataForEdit = async (token: string) => {
 };
 
 // Fetch profile data and posts for profile page
-export const fetchProfileWithPosts = async (token: string) => {
+export const fetchProfileWithPosts = async () => {
     try {
+        const token = getAuthToken();
         const response = await axios.get(`${API_BASE_URL}/`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -39,7 +41,7 @@ export const updateProfileData = async (formData: FormData) => {
     try {
         const token = getAuthToken();
 
-        const response = await axios.post(`${API_BASE_URL}/update`, formData, {
+        const response = await axios.put(`${API_BASE_URL}/update`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
@@ -63,3 +65,35 @@ export const checkUsernameAvailability = async (username: string) => {
         throw new Error(error.response?.data?.error || 'Failed to check username availability');
     }
 };
+
+// Fetch public profile data and posts for profile page
+export const fetchPublicProfileWithPosts = async (username: string) => {
+    try {
+        const token = getAuthToken();
+        const response = await axios.get(`${API_BASE_URL}/public/${username}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.error || 'Failed to fetch profile with posts');
+    }
+};
+
+export const searchUsername = async (username: string) => {
+    try {
+        const token = getAuthToken();
+        const response = await axios.get(`${API_BASE_URL}/search/${username}`, {
+            params: { username },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.response?.data?.error || 'Failed to search for username');
+    }
+};
+
+

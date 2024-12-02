@@ -18,7 +18,7 @@ interface ErrorResponse {
 
 // Store a new post
 export const storePost = async (formData: FormData): Promise<CreatePostResponse> => {
-    const token = getAuthToken(); // Retrieve token from localStorage
+    const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };
     }
@@ -27,7 +27,7 @@ export const storePost = async (formData: FormData): Promise<CreatePostResponse>
         const response = await axios.post(`${API_URL}/store`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`, // Pass the token here
+                Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
@@ -42,9 +42,9 @@ interface DeletePostResponse {
     message?: string;
 }
 
-// Delete a post (only the poster can delete their post)
+// Delete a post
 export const deletePost = async (postId: string): Promise<DeletePostResponse> => {
-    const token = getAuthToken(); // Retrieve token from localStorage
+    const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };
     }
@@ -52,8 +52,7 @@ export const deletePost = async (postId: string): Promise<DeletePostResponse> =>
     try {
         const response = await axios.delete(`${API_URL}/${postId}`, {
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`, // Pass the token here
+                Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
@@ -65,16 +64,15 @@ export const deletePost = async (postId: string): Promise<DeletePostResponse> =>
 
 // Like a post
 export const likePost = async (postId: string): Promise<CreatePostResponse> => {
-    const token = getAuthToken(); // Retrieve token from localStorage
+    const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };
     }
 
     try {
-        const response = await axios.post(`${API_URL}/like`, { postId }, {
+        const response = await axios.post(`${API_URL}/${postId}/like`, {}, {
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`, // Pass the token here
+                Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
@@ -86,18 +84,16 @@ export const likePost = async (postId: string): Promise<CreatePostResponse> => {
 
 // Unlike a post
 export const unlikePost = async (postId: string): Promise<CreatePostResponse> => {
-    const token = getAuthToken(); // Retrieve token from localStorage
+    const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };
     }
 
     try {
-        const response = await axios.delete(`${API_URL}/like`, {
+        const response = await axios.delete(`${API_URL}/${postId}/like`, {
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`, // Pass the token here
+                Authorization: `Bearer ${token}`,
             },
-            data: { postId },
         });
         return response.data;
     } catch (error) {
@@ -119,15 +115,14 @@ export const getPostLikes = async (postId: string): Promise<{ likeCount?: number
 
 // Comment on a post
 export const createComment = async (postId: string, content: string): Promise<{ message?: string; error?: string }> => {
-    const token = getAuthToken(); // Retrieve token from localStorage
+    const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };
     }
 
     try {
-        const response = await axios.post(`${API_URL}/comment`, { postId, content }, {
+        const response = await axios.post(`${API_URL}/${postId}/comment`, { content }, {
             headers: {
-                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
         });
@@ -140,7 +135,7 @@ export const createComment = async (postId: string, content: string): Promise<{ 
 
 // Delete a comment
 export const deleteComment = async (commentId: string): Promise<{ message?: string; error?: string }> => {
-    const token = getAuthToken(); // Retrieve token from localStorage
+    const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };
     }
@@ -148,7 +143,6 @@ export const deleteComment = async (commentId: string): Promise<{ message?: stri
     try {
         const response = await axios.delete(`${API_URL}/comment/${commentId}`, {
             headers: {
-                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
         });
@@ -156,5 +150,36 @@ export const deleteComment = async (commentId: string): Promise<{ message?: stri
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
         return { error: err.response?.data?.error || 'Failed to delete comment.' };
+    }
+};
+
+// Get all comments for a post
+export const getPostComments = async (postId: string): Promise<{ comments?: any[]; error?: string }> => {
+    try {
+        const response = await axios.get(`${API_URL}/${postId}/comment`);
+        return response.data; // Should return { comments: array }
+    } catch (error) {
+        const err = error as AxiosError<ErrorResponse>;
+        return { error: err.response?.data?.error || 'Failed to fetch comments.' };
+    }
+};
+
+// Get detailed post information
+export const getPostDetail = async (postId: string): Promise<{ post?: any; error?: string }> => {
+    const token = getAuthToken();
+    if (!token) {
+        return { error: 'User is not authenticated. Please log in.' };
+    }
+
+    try {
+        const response = await axios.get(`${API_URL}/${postId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data; // Should include post details, user profile info, comments, likes, etc.
+    } catch (error) {
+        const err = error as AxiosError<ErrorResponse>;
+        return { error: err.response?.data?.error || 'Failed to fetch post details.' };
     }
 };

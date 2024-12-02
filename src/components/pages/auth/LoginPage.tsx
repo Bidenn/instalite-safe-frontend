@@ -37,9 +37,10 @@ const Login: React.FC = () => {
 
         try {
             if (loginResponse.message === "Login successful" && loginResponse.token) {
+                
                 localStorage.setItem('token', loginResponse.token);
     
-                const userResponse = await fetchProfileDataForEdit(loginResponse.token);
+                const userResponse = await fetchProfileDataForEdit();
     
                 if ('error' in userResponse) {
                     Swal.fire({

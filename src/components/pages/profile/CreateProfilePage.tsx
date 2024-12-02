@@ -21,7 +21,7 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const result = await fetchProfileDataForEdit(token);
+                const result = await fetchProfileDataForEdit();
                 setEmail(result.user.email || ''); // Hanya menampilkan email
                 setUsername(result.user.username || '');
                 setFullName(result.fullName || '');
