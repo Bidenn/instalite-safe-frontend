@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const API_URL = 'http://localhost:5001/api/auth';
+const API_URL = 'http://10.34.4.203:5001/api/auth';
 
 interface RegisterResponse {
     error?: string;

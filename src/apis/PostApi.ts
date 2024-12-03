@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const API_URL = 'http://localhost:5001/api/post';
+const API_URL = 'http://10.34.4.203:5001/api/post';
 
 // Helper function to retrieve the token from localStorage
 const getAuthToken = (): string | null => {

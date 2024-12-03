@@ -106,7 +106,7 @@ const PublicProfile: React.FC = () => {
                             </div>
                             <div className="right-content">
                                 <div className="upload-box">
-                                    <img src={ user.profilePhoto ? `http://localhost:5001/users/${user.profilePhoto}` : nullPhoto } alt="profile"/>
+                                    <img src={ user.profilePhoto ? `http://10.34.4.203:5001/users/${user.profilePhoto}` : nullPhoto } alt="profile"/>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +124,7 @@ const PublicProfile: React.FC = () => {
                                 posts.map((post) => (
                                     <a key={post.id} className="gallery-box" href={`/post-detail/${post.id}`}>
                                         <img
-                                            src={`http://localhost:5001/posts/${post.content}`}
+                                            src={`http://10.34.4.203:5001/posts/${post.content}`}
                                             alt="user post"
                                         />
                                     </a>

@@ -114,10 +114,10 @@ const Postcard: React.FC<PostcardProps> = ({ userName, userImage, postContent, p
             style={{ cursor: "pointer" }}
         >
             {/* Postcard Header */}
-            <PostcardHeader userName={userName} userImage={userImage ? `http://localhost:5001/users/${userImage}` : nullPhoto} />
+            <PostcardHeader userName={userName} userImage={userImage ? `http://10.34.4.203:5001/users/${userImage}` : nullPhoto} />
 
             {/* Postcard Content */}
-            <PostcardContent postContent={`http://localhost:5001/posts/${postContent}`} />
+            <PostcardContent postContent={`http://10.34.4.203:5001/posts/${postContent}`} />
 
             {/* Postcard Footer */}
             <PostcardFooter postCaption={postCaption} likeCounts={likeCounts} commentCounts={commentCounts}/>
