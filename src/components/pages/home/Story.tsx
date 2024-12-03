@@ -17,7 +17,7 @@ const Story: React.FC<StoryProps> = ({ userName, profilePhoto }) => {
               <a href="/profile" className="categore-box style-1">
                 <div className="story-bx">
                   <img
-                    src={profilePhoto ? `http://localhost:5000/users/${profilePhoto}` : nullPhoto}
+                    src={profilePhoto ? `http://localhost:5001/users/${profilePhoto}` : nullPhoto}
                     alt="Photo Profile"
                   />
                   <div className="add-box"></div>

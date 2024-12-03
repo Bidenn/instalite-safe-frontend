@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api/profile'; // Update with your API base URL
+const API_BASE_URL = 'http://localhost:5001/api/profile'; // Update with your API base URL
 
 const getAuthToken = (): string | null => {
     return localStorage.getItem('token'); // Retrieve token stored as 'token' in localStorage

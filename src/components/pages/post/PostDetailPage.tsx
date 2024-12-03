@@ -125,7 +125,7 @@ const PostDetail: React.FC = () => {
                         </div>
                     </div>
                     <div className="dz-media">
-                        <img src={`http://localhost:5000/posts/${post.content}`} alt="Post content" style={{ width: '100%', borderRadius: 0 }} />
+                        <img src={`http://localhost:5001/posts/${post.content}`} alt="Post content" style={{ width: '100%', borderRadius: 0 }} />
                     </div>
                     <div className="container pt-1">
                         <div className="post-card" style={{ width: '100%', borderRadius: 0 }}>

@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const API_URL = 'http://localhost:5000/api/homepage'; // Updated API endpoint
+const API_URL = 'http://localhost:5001/api/homepage'; // Updated API endpoint
 
 interface HomepageResponse {
     loggedUser: {

@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const API_URL = 'http://localhost:5000/api/mutual';
+const API_URL = 'http://localhost:5001/api/mutual';
 
 // Helper function to retrieve the token from localStorage
 const getAuthToken = (): string | null => {

@@ -99,7 +99,7 @@ const SearchPublicProfile: React.FC = () => {
                                     <div className="media media-40 me-2">
                                         <img
                                             className="rounded-circle"
-                                            src={profile.profilePhoto ? `${"http://localhost:5000/users/" + profile.profilePhoto}` : nullPhoto}
+                                            src={profile.profilePhoto ? `${"http://localhost:5001/users/" + profile.profilePhoto}` : nullPhoto}
                                             alt="profile"
                                             style={{ width: "40px", height: "40px" }}
                                         />

@@ -111,7 +111,7 @@ const Profile: React.FC = () => {
                                     <img
                                         src={
                                             user.profilePhoto
-                                                ? `http://localhost:5000/users/${user.profilePhoto}`
+                                                ? `http://localhost:5001/users/${user.profilePhoto}`
                                                 : nullPhoto
                                         }
                                         alt="profile"
@@ -155,7 +155,7 @@ const Profile: React.FC = () => {
                                 posts.map((post) => (
                                     <a key={post.id} className="gallery-box" href={`/post-detail/${post.id}`}>
                                         <img
-                                            src={`http://localhost:5000/posts/${post.content}`}
+                                            src={`http://localhost:5001/posts/${post.content}`}
                                             alt="user post"
                                         />
                                     </a>
