@@ -32,7 +32,7 @@ export const sendFollowRequest = async (followedId: string): Promise<APIResponse
         return response.data;
     } catch (error) {
         const err = error as AxiosError<{ error: string }>;
-        return { error: err.response?.data?.error || 'Failed to send follow request.' };
+        return { error: err.response?.data?.error ?? 'Failed to send follow request.' };
     }
 };
 
@@ -52,7 +52,7 @@ export const viewPendingRequests = async (): Promise<{ requests: any[]; error?: 
         return { requests: response.data };
     } catch (error) {
         const err = error as AxiosError<{ error: string }>;
-        return { requests: [], error: err.response?.data?.error || 'Failed to retrieve pending requests.' };
+        return { requests: [], error: err.response?.data?.error ?? 'Failed to retrieve pending requests.' };
     }
 };
 
@@ -76,7 +76,7 @@ export const acceptFollowRequest = async (followerId: string): Promise<APIRespon
         return response.data;
     } catch (error) {
         const err = error as AxiosError<{ error: string }>;
-        return { error: err.response?.data?.error || 'Failed to accept follow request.' };
+        return { error: err.response?.data?.error ?? 'Failed to accept follow request.' };
     }
 };
 
@@ -97,6 +97,6 @@ export const rejectFollowRequest = async (followerId: string): Promise<APIRespon
         return response.data;
     } catch (error) {
         const err = error as AxiosError<{ error: string }>;
-        return { error: err.response?.data?.error || 'Failed to reject follow request.' };
+        return { error: err.response?.data?.error ?? 'Failed to reject follow request.' };
     }
 };

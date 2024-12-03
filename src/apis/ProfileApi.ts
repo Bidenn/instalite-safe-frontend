@@ -17,7 +17,7 @@ export const fetchProfileDataForEdit = async () => {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.error || 'Failed to fetch profile data for editing');
+        throw new Error(error.response?.data?.error ?? 'Failed to fetch profile data for editing');
     }
 };
 
@@ -32,7 +32,7 @@ export const fetchProfileWithPosts = async () => {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.error || 'Failed to fetch profile with posts');
+        throw new Error(error.response?.data?.error ?? 'Failed to fetch profile with posts');
     }
 };
 
@@ -50,7 +50,7 @@ export const updateProfileData = async (formData: FormData) => {
 
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.error || 'Failed to send profile data');
+        throw new Error(error.response?.data?.error ?? 'Failed to send profile data');
     }
 };
 
@@ -62,7 +62,7 @@ export const checkUsernameAvailability = async (username: string) => {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.error || 'Failed to check username availability');
+        throw new Error(error.response?.data?.error ?? 'Failed to check username availability');
     }
 };
 
@@ -77,7 +77,7 @@ export const fetchPublicProfileWithPosts = async (username: string) => {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.error || 'Failed to fetch profile with posts');
+        throw new Error(error.response?.data?.error ?? 'Failed to fetch profile with posts');
     }
 };
 
@@ -92,7 +92,7 @@ export const searchUsername = async (username: string) => {
         });
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.error || 'Failed to search for username');
+        throw new Error(error.response?.data?.error ?? 'Failed to search for username');
     }
 };
 

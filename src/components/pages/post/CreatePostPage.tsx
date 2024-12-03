@@ -44,7 +44,7 @@ const CreatePost: React.FC = () => {
             return;
         }
 
-        if (!selectedImage || !postContent) {
+        if (!selectedImage ?? !postContent) {
             Swal.fire({
                 title: 'Error!',
                 text: 'Please provide both an image and caption.',

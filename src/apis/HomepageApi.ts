@@ -42,6 +42,6 @@ export const fetchHomepageData = async (
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to fetch homepage data.' };
+        return { error: err.response?.data?.error ?? 'Failed to fetch homepage data.' };
     }
 };

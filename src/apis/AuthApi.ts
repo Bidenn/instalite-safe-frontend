@@ -30,7 +30,7 @@ export const register = async (payload: { email: string; password: string }): Pr
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Registration failed.' };
+        return { error: err.response?.data?.error ?? 'Registration failed.' };
     }
 };
 
@@ -41,7 +41,7 @@ export const login = async (payload: { UsernameOrEmail: string; Password: string
         return response.data;
     } catch (error) {
         const err = error as AxiosError<{ error: string }>;
-        return { error: err.response?.data?.error || 'Login failed.' };
+        return { error: err.response?.data?.error ?? 'Login failed.' };
     }
 };
 
@@ -61,7 +61,7 @@ export const verifyEmail = async (encodedToken: string): Promise<VerifyResponse>
         return { success: true, message: response.data.message };
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { success: false, message: err.response?.data?.error || 'Email verification failed.' };
+        return { success: false, message: err.response?.data?.error ?? 'Email verification failed.' };
     }
 };
 
@@ -72,7 +72,7 @@ export const getResetPassword = async (email: string): Promise<RegisterResponse>
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to send reset password email.' };
+        return { error: err.response?.data?.error ?? 'Failed to send reset password email.' };
     }
 };
 
@@ -83,7 +83,7 @@ export const storeResetPassword = async (token: string, newPassword: string): Pr
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to reset password.' };
+        return { error: err.response?.data?.error ?? 'Failed to reset password.' };
     }
 };
 

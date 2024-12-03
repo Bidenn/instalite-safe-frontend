@@ -36,7 +36,7 @@ const ResetPassword: React.FC = () => {
 
         const { password, confirmPassword } = formData;
 
-        if (!password || !confirmPassword) {
+        if (!password ?? !confirmPassword) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Input Required',
@@ -65,18 +65,18 @@ const ResetPassword: React.FC = () => {
 
         setIsLoading(true);
         try {
-            const response = await storeResetPassword(token || '', password); // API call with token and password
+            const response = await storeResetPassword(token ?? '', password); // API call with token and password
             Swal.fire({
                 icon: 'success',
                 title: 'Password Reset Successful',
-                text: response.message || 'You can now log in with your new password.',
+                text: response.message ?? 'You can now log in with your new password.',
             });
             navigate('/login');
         } catch (error: any) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.response?.data?.error || 'Failed to reset password. Please try again.',
+                text: error.response?.data?.error ?? 'Failed to reset password. Please try again.',
             });
         } finally {
             setIsLoading(false);

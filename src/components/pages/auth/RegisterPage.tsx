@@ -85,13 +85,13 @@ const Register: React.FC = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Registration Failed',
-                    text: response.error || 'Please try again later.',
+                    text: response.error ?? 'Please try again later.',
                 });
             } else {
                 Swal.fire({
                     icon: 'success',
                     title: 'Registration Successful!',
-                    text: response.message || 'A verification email has been sent to your email address.',
+                    text: response.message ?? 'A verification email has been sent to your email address.',
                     timer: 3000,
                 });
 

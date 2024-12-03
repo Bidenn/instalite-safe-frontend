@@ -34,7 +34,7 @@ export const storePost = async (formData: FormData): Promise<CreatePostResponse>
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Post creation failed.' };
+        return { error: err.response?.data?.error ?? 'Post creation failed.' };
     }
 };
 
@@ -59,7 +59,7 @@ export const deletePost = async (postId: string): Promise<DeletePostResponse> =>
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to delete post.' };
+        return { error: err.response?.data?.error ?? 'Failed to delete post.' };
     }
 };
 
@@ -79,7 +79,7 @@ export const likePost = async (postId: string): Promise<CreatePostResponse> => {
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to like post.' };
+        return { error: err.response?.data?.error ?? 'Failed to like post.' };
     }
 };
 
@@ -99,7 +99,7 @@ export const unlikePost = async (postId: string): Promise<CreatePostResponse> =>
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to unlike post.' };
+        return { error: err.response?.data?.error ?? 'Failed to unlike post.' };
     }
 };
 
@@ -110,7 +110,7 @@ export const getPostLikes = async (postId: string): Promise<{ likeCount?: number
         return response.data; // Should return { likeCount: number }
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to fetch like count.' };
+        return { error: err.response?.data?.error ?? 'Failed to fetch like count.' };
     }
 };
 
@@ -130,7 +130,7 @@ export const createComment = async (postId: string, content: string): Promise<{ 
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to create comment.' };
+        return { error: err.response?.data?.error ?? 'Failed to create comment.' };
     }
 };
 
@@ -150,7 +150,7 @@ export const deleteComment = async (commentId: string): Promise<{ message?: stri
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to delete comment.' };
+        return { error: err.response?.data?.error ?? 'Failed to delete comment.' };
     }
 };
 
@@ -161,7 +161,7 @@ export const getPostComments = async (postId: string): Promise<{ comments?: any[
         return response.data; // Should return { comments: array }
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to fetch comments.' };
+        return { error: err.response?.data?.error ?? 'Failed to fetch comments.' };
     }
 };
 
@@ -181,6 +181,6 @@ export const getPostDetail = async (postId: string): Promise<{ post?: any; error
         return response.data; // Should include post details, user profile info, comments, likes, etc.
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Failed to fetch post details.' };
+        return { error: err.response?.data?.error ?? 'Failed to fetch post details.' };
     }
 };

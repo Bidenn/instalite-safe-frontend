@@ -46,7 +46,7 @@ const Login: React.FC = () => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: userResponse.error || 'Failed to fetch user data.',
+                        text: userResponse.error ?? 'Failed to fetch user data.',
                     });
                     return;
                 }

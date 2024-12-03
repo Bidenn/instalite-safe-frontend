@@ -13,7 +13,7 @@ interface Profile {
 const SearchPublicProfile: React.FC = () => {
     const [query, setQuery] = useState<string>(() => {
         // Initialize state with query from localStorage if available
-        return localStorage.getItem("searchQuery") || "";
+        return localStorage.getItem("searchQuery") ?? "";
     });
     const [profiles, setProfiles] = useState<Profile[]>([]);
     const [loading, setLoading] = useState<boolean>(false);

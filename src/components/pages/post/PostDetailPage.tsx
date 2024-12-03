@@ -112,7 +112,7 @@ const PostDetail: React.FC = () => {
                             >
                                 <img
                                     className="rounded-circle"
-                                    src={post.authorProfile?.profilePhoto || u1}
+                                    src={post.authorProfile?.profilePhoto ?? u1}
                                     alt="User profile"
                                     style={{ width: 30, height: 30 }}
                                 />
@@ -186,7 +186,7 @@ const PostDetail: React.FC = () => {
                                             style={{ alignItems: 'flex-start' }}
                                         >
                                             <img
-                                                src={comment.authorProfile?.profilePhoto || u1}
+                                                src={comment.authorProfile?.profilePhoto ?? u1}
                                                 alt="User"
                                                 style={{
                                                     width: 20,

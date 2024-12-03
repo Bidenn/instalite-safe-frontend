@@ -54,7 +54,7 @@ const PublicProfile: React.FC = () => {
                             bio: data.profile.bio,
                         });
     
-                        setPosts(data.posts || []); // Assign posts if available
+                        setPosts(data.posts ?? []); // Assign posts if available
                     } else if ('error' in data) {
                         setError(data.error); // If there's an error from the API
                     } else {
@@ -101,8 +101,8 @@ const PublicProfile: React.FC = () => {
                         <div className="main-profile">
                             <div className="left-content">
                                 <span>@{user.username}</span>
-                                <h5 className="mt-1">{user.fullName || ''}</h5>
-                                <h6 className="text-primary font-w400">{user.career || ''}</h6>
+                                <h5 className="mt-1">{user.fullName ?? ''}</h5>
+                                <h6 className="text-primary font-w400">{user.career ?? ''}</h6>
                             </div>
                             <div className="right-content">
                                 <div className="upload-box">
@@ -112,7 +112,7 @@ const PublicProfile: React.FC = () => {
                         </div>
                         <div className="info">
                             <h6>Bio</h6>
-                            <p>{user.bio || 'No details provided'}</p>
+                            <p>{user.bio ?? 'No details provided'}</p>
                         </div>
 
                         {/* Follow Button */}

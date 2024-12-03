@@ -40,14 +40,14 @@ const ResetPassword: React.FC = () => {
             Swal.fire({
                 icon: 'success',
                 title: 'Email Sent',
-                text: response.message || 'Check your email for reset instructions.',
+                text: response.message ?? 'Check your email for reset instructions.',
             });
             navigate('/login'); // Redirect to login after success
         } catch (error: any) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.response?.data?.error || 'Failed to send reset email. Please try again.',
+                text: error.response?.data?.error ?? 'Failed to send reset email. Please try again.',
             });
         } finally {
             setIsLoading(false);

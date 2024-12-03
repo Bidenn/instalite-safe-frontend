@@ -40,7 +40,7 @@ const VerifyEmail: React.FC = () => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Verification Failed',
-                        text: response.error || 'Something went wrong. Please try again later.',
+                        text: response.error ?? 'Something went wrong. Please try again later.',
                     });
                 }
             } catch (error) {

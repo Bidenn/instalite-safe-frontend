@@ -22,11 +22,11 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
         const fetchProfile = async () => {
             try {
                 const result = await fetchProfileDataForEdit();
-                setEmail(result.user.email || ''); // Hanya menampilkan email
-                setUsername(result.user.username || '');
-                setFullName(result.fullName || '');
-                setBio(result.aboutMe || '');
-                setCareer(result.career || '');
+                setEmail(result.user.email ?? ''); // Hanya menampilkan email
+                setUsername(result.user.username ?? '');
+                setFullName(result.fullName ?? '');
+                setBio(result.aboutMe ?? '');
+                setCareer(result.career ?? '');
             } catch (err) {
                 setError('Failed to fetch user data');
             }
