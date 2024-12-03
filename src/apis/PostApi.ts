@@ -10,6 +10,7 @@ const getAuthToken = (): string | null => {
 interface CreatePostResponse {
     error?: string;
     message?: string;
+    success?: string;
 }
 
 interface ErrorResponse {
@@ -165,7 +166,7 @@ export const getPostComments = async (postId: string): Promise<{ comments?: any[
 };
 
 // Get detailed post information
-export const getPostDetail = async (postId: string): Promise<{ post?: any; error?: string }> => {
+export const getPostDetail = async (postId: string): Promise<{ post?: any; error?: string; isLiked?: any; comments?:any }> => {
     const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };

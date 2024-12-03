@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import camlogo from '../../assets/images/cam-logo-removed.png';
 import { storePost } from '../../../apis/PostApi';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 const CreatePost: React.FC = () => {
     const [postContent, setPostContent] = useState<string>(''); // Caption
@@ -34,12 +35,22 @@ const CreatePost: React.FC = () => {
     // Handle form submission
     const handleSubmit = async () => {
         if (!token) {
-            alert("Authentication token not found. Please log in.");
+            Swal.fire({
+                title: 'Error!',
+                text: 'Authentication token not found. Please log in.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
             return;
         }
 
         if (!selectedImage || !postContent) {
-            alert("Please provide both an image and caption.");
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please provide both an image and caption.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
             return;
         }
 
@@ -50,14 +61,30 @@ const CreatePost: React.FC = () => {
         try {
             const response = await storePost(formData); // Send formData with token
             if (response.error) {
-                alert("Failed to create post. Please try again.");
+                Swal.fire({
+                    title: 'Failed!',
+                    text: 'Failed to create post. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
             } else {
-                alert("Post created successfully!");
-                navigate('/Home');
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Post created successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    navigate('/Home'); // Redirect after success
+                });
             }
         } catch (error) {
             console.error("Error creating post:", error);
-            alert("Failed to create post. Please try again.");
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to create post. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
         }
     };
 
@@ -68,7 +95,7 @@ const CreatePost: React.FC = () => {
                 <div className="container">
                     <div className="main-bar">
                         <div className="left-content">
-                            <a href="/" className="back-btn">
+                            <a href="/home" className="back-btn">
                                 <i className="fa-solid fa-arrow-left"></i>
                             </a>
                             <h4 className="title mb-0">Create Post</h4>
