@@ -12,7 +12,6 @@ import EditProfile from './components/pages/profile/EditProfilePage';
 import PostDetail from './components/pages/post/PostDetailPage';
 import ProtectedRoute from './components/utils/ProtectedRoute';
 import IdleTimer from './components/utils/IdleTimer';
-import VerifyEmail from './components/pages/auth/VerifyEmailPage';
 import CreateProfile from './components/pages/profile/CreateProfilePage';
 import PublicProfile from './components/pages/public/PublicProfilePage';
 import SearchPublicProfile from './components/pages/public/SearchPublicProfilePage';
@@ -31,7 +30,6 @@ function App() {
                         {/* Public Routes */}
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/verify-email/:encodedToken" element={<VerifyEmail />} />
 
                         {/* Protected Routes */}
                         <Route element={<ProtectedRoute />}>

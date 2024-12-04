@@ -17,6 +17,7 @@ const SearchPublicProfile: React.FC = () => {
     });
     const [profiles, setProfiles] = useState<Profile[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
 
     useEffect(() => {
         if (query.trim() === "") {

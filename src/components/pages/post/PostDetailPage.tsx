@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPostDetail, deletePost, likePost, unlikePost } from '../../../apis/PostApi'; // Add the new like/unlike APIs
+import { getPostDetail, deletePost } from '../../../apis/PostApi'; // Add the new like/unlike APIs
 import Swal from 'sweetalert2'; // Import SweetAlert2
 
 import u1 from '../../assets/images/avatar/NullUserPhoto.png';
@@ -9,11 +9,9 @@ const PostDetail: React.FC = () => {
     const { postId } = useParams();
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
-
+    const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
     const [post, setPost] = useState<any>(null);
-    const [comments, setComments] = useState<any[]>([]);
-    // const [isLiked, setIsLiked] = useState<boolean>(false);
-    const [isLiked, setIsLiked] = useState(false);
+    const [photo, setPhoto] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -25,10 +23,11 @@ const PostDetail: React.FC = () => {
         const loadPostDetail = async () => {
             try {
                 const data = await getPostDetail(postId!);
+                const authorProfile = data.post.authorProfile.profilePhoto;
 
                 setPost(data.post);
-                setComments(data.comments);
-                setIsLiked(data.isLiked); // Set the isLiked value from the fetched data
+                setPhoto(authorProfile);
+
             } catch (err) {
                 console.error('Failed to fetch post details:', err);
                 setError('An error occurred while fetching post details.');
@@ -37,10 +36,6 @@ const PostDetail: React.FC = () => {
 
         loadPostDetail();
     }, [postId, token, navigate]);
-
-    const handleLikeToggle = () => {
-        setIsLiked(!isLiked); // Toggle the like state
-    };
 
     const handleDeletePost = async () => {
         if (!postId) return;
@@ -112,7 +107,7 @@ const PostDetail: React.FC = () => {
                             >
                                 <img
                                     className="rounded-circle"
-                                    src={post.authorProfile?.profilePhoto ?? u1}
+                                    src={photo ? `${apiUrl}/users/${photo}` : u1}
                                     alt="User profile"
                                     style={{ width: 30, height: 30 }}
                                 />
@@ -125,40 +120,25 @@ const PostDetail: React.FC = () => {
                         </div>
                     </div>
                     <div className="dz-media">
-                        <img src={`http://10.34.4.203:5001/posts/${post.content}`} alt="Post content" style={{ width: '100%', borderRadius: 0 }} />
+                        <img src={`${apiUrl}/posts/${post.content}`} alt="Post content" style={{ width: '100%', borderRadius: 0 }} />
                     </div>
-                    <div className="container pt-1">
+                    <div className="container" style={{ paddingLeft: 0, paddingTop: 5, paddingBottom: 0 }}>
                         <div className="post-card" style={{ width: '100%', borderRadius: 0 }}>
                             <div className="post-footer">
                                 <div className="post-meta-btn d-flex align-items-center mt-0">
-                                    <button
+                                    <a
+                                        href="#"
                                         className="action-btn d-flex align-items-center"
-                                        style={{
-                                            background: 'transparent',
-                                            border: 'none',
-                                            color: '#000',
-                                            cursor: 'pointer', // Make the button look clickable
-                                        }}
-                                        onClick={handleLikeToggle} // Handle the like toggle on click
+                                        style={{ textDecoration: 'none', color: 'red' }}
                                     >
-                                        <i
-                                            className={`fa${isLiked ? 's' : 'r'} fa-heart`}
-                                            style={{
-                                                color: isLiked ? 'red' : '#000',
-                                                fontSize: '14px',
-                                                fontWeight: 'normal'
-                                            }}
-                                        ></i>
-                                    </button>
+                                        <i className="fa-solid fa-heart"></i>
+                                    </a>
                                     <a
                                         href="#"
                                         className="action-btn d-flex align-items-center"
                                         style={{ textDecoration: 'none', color: '#000' }}
                                     >
                                         <i className="fa-solid fa-comment"></i>
-                                        <span style={{ fontSize: 14, marginLeft: 5, fontWeight: 'normal' }}>
-                                            {comments.length}
-                                        </span>
                                     </a>
                                     <button
                                         onClick={handleDeletePost}
@@ -172,57 +152,36 @@ const PostDetail: React.FC = () => {
                                         <i className="fa-regular fa-trash-can"></i>
                                     </button>
                                 </div>
-                                <p style={{ fontSize: 14, lineHeight: 1.5, marginBottom: 0, marginTop: 8, textAlign: 'left' }}>
-                                    {post.caption}
-                                </p>
                             </div>
                         </div>
-                        <div className="comment-card mt-4">
-                            <ul className="dz-comments-list">
-                                {comments.map((comment, index) => (
-                                    <li key={index} style={{ marginBottom: 20 }}>
-                                        <div
-                                            className="list-content d-flex"
-                                            style={{ alignItems: 'flex-start' }}
-                                        >
-                                            <img
-                                                src={comment.authorProfile?.profilePhoto ?? u1}
-                                                alt="User"
-                                                style={{
-                                                    width: 20,
-                                                    height: 20,
-                                                    borderRadius: '50%',
-                                                    marginRight: 8,
-                                                }}
-                                            />
-                                            <div>
-                                                <h6
-                                                    className="font-12 mb-1"
-                                                    style={{
-                                                        fontWeight: 'bold',
-                                                        fontSize: 12,
-                                                        marginBottom: 2,
-                                                        textAlign: 'left',
-                                                    }}
-                                                >
-                                                    {comment.author.username}
-                                                </h6>
-                                                <p
-                                                    className="mb-0"
-                                                    style={{
-                                                        fontSize: 12,
-                                                        color: '#666',
-                                                        lineHeight: 1.3,
-                                                        textAlign: 'left',
-                                                    }}
-                                                >
-                                                    {comment.text}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
+                    </div>
+                    <div className="container pt-0">
+                        <div className="post-card" style={{ width: '100%', borderRadius: 0 }}>
+                            <div className="post-footer">
+                                <div
+                                    style={{
+                                        fontSize: 14,
+                                        lineHeight: 1.5,
+                                        marginBottom: 0,
+                                        textAlign: 'left',
+                                        wordBreak: 'break-word', // Ensures long text wraps properly
+                                    }}
+                                >
+                                    <span
+                                        style={{
+                                            fontWeight: 'bold',
+                                            marginRight: 8, // Add space between username and caption
+                                            display: 'inline', // Ensure username is inline with the caption
+                                        }}
+                                    >
+                                        {post.author.username}
+                                    </span>
+                                    <span>
+                                        {post.caption}
+                                    </span>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>

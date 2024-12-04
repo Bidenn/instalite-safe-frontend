@@ -20,6 +20,9 @@ interface PostData {
 }
 
 const Profile: React.FC = () => {
+    
+    const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
+
     const [user, setUser] = useState<UserData>({
         username: '',
         fullName: '',
@@ -104,16 +107,12 @@ const Profile: React.FC = () => {
                             <div className="left-content">
                                 <span>@{user.username}</span>
                                 <h5 className="mt-1">{user.fullName ?? 'Full Name'}</h5>
-                                <h6 className="text-primary font-w400">{user.career ?? 'bio'}</h6>
+                                <h6 className="text-primary font-w400">{user.bio ?? 'bio'}</h6>
                             </div>
                             <div className="right-content">
                                 <div className="upload-box">
                                     <img
-                                        src={
-                                            user.profilePhoto
-                                                ? `http://10.34.4.203:5001/users/${user.profilePhoto}`
-                                                : nullPhoto
-                                        }
+                                        src={ user.profilePhoto ? `${apiUrl}/users/${user.profilePhoto}` : nullPhoto }
                                         alt="profile"
                                     />
                                     <button className="upload-btn" onClick={() => navigate('edit')}>
@@ -128,34 +127,12 @@ const Profile: React.FC = () => {
                         </div>
                     </div>
                     <div className="contant-section">
-                        <div className="social-bar">
-                            <ul>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <h4>1</h4>	
-                                        <span>Post</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="social-friends.html">
-                                        <h4>11</h4>	
-                                        <span>Following</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="social-friends.html">
-                                        <h4>99</h4>	
-                                        <span>Followers</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="dz-lightgallery style-2 mt-4">
+                        <div className="dz-lightgallery style-2">
                             {posts.length > 0 ? (
                                 posts.map((post) => (
-                                    <a key={post.id} className="gallery-box" href={`/post-detail/${post.id}`}>
+                                    <a key={post.id} className="gallery-box" href={`/posts/${post.id}`}>
                                         <img
-                                            src={`http://10.34.4.203:5001/posts/${post.content}`}
+                                            src={`${apiUrl}/posts/${post.content}`}
                                             alt="user post"
                                         />
                                     </a>

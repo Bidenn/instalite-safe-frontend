@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://10.34.4.203:5001/api/profile'; // Update with your API base URL
+const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
+const API_BASE_URL = `${apiUrl}/api/profile`; // Update with your API base URL
 
 const getAuthToken = (): string | null => {
     return localStorage.getItem('token'); // Retrieve token stored as 'token' in localStorage
@@ -57,7 +58,11 @@ export const updateProfileData = async (formData: FormData) => {
 // Check username availability
 export const checkUsernameAvailability = async (username: string) => {
     try {
+        const token = getAuthToken();
         const response = await axios.get(`${API_BASE_URL}/check-username`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
             params: { username },
         });
         return response.data;

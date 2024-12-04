@@ -6,17 +6,16 @@ import { fetchProfileDataForEdit } from '../../../apis/ProfileApi';
 import Swal from 'sweetalert2';
 
 interface FormData {
-    UsernameOrEmail: string;
-    Password: string;
+    usernameOrEmail: string;
+    password: string;
 }
 
 const Login: React.FC = () => {
     const [formData, setFormData] = useState<FormData>({
-        UsernameOrEmail: '',
-        Password: '',
+        usernameOrEmail: '',
+        password: '',
     });
 
-    const [message, setMessage] = useState<string>('');
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const navigate = useNavigate();
@@ -31,17 +30,15 @@ const Login: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setMessage(''); // Clear any previous message
-    
-        const loginResponse = await login(formData);
 
         try {
-            if (loginResponse.message === "Login successful" && loginResponse.token) {
-                
+            const loginResponse = await login(formData);
+
+            if (loginResponse?.message === "Login successful" && loginResponse?.token) {
                 localStorage.setItem('token', loginResponse.token);
-    
+
                 const userResponse = await fetchProfileDataForEdit();
-    
+
                 if ('error' in userResponse) {
                     Swal.fire({
                         icon: 'error',
@@ -50,9 +47,9 @@ const Login: React.FC = () => {
                     });
                     return;
                 }
-    
-                const username = userResponse.user.username;
-    
+
+                const username = userResponse?.user?.username;
+
                 if (username) {
                     Swal.fire({
                         icon: 'success',
@@ -74,7 +71,7 @@ const Login: React.FC = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Login Failed',
-                    text: loginResponse.error ?? 'Invalid username or password.',
+                    text: loginResponse?.error ?? 'Invalid username or password.',
                 });
             }
         } catch (error) {
@@ -85,15 +82,16 @@ const Login: React.FC = () => {
             });
         }
     };
-    
-    
 
     return (
         <div className="page-wraper">
             <div className="content-body">
                 <div className="container vh-100">
                     <div className="welcome-area">
-                        <div className="bg-image bg-image-overlay" style={{ backgroundImage: `url(${pic4})` }}></div>
+                        <div
+                            className="bg-image bg-image-overlay"
+                            style={{ backgroundImage: `url(${pic4})` }}
+                        ></div>
                         <div className="join-area">
                             <div className="started">
                                 <h1 className="title">Instalite - Login</h1>
@@ -102,40 +100,43 @@ const Login: React.FC = () => {
                                 <div className="mb-3 input-group input-group-icon">
                                     <span className="input-group-text">
                                         <div className="input-icon">
-                                            {/* SVG Icon */}
+                                        <i className="far fa-envelope"></i>
                                         </div>
                                     </span>
                                     <input
                                         type="text"
                                         className="form-control"
                                         placeholder="Username or Email"
-                                        name="UsernameOrEmail"
-                                        value={formData.UsernameOrEmail}
+                                        name="usernameOrEmail"
+                                        value={formData.usernameOrEmail}
                                         onChange={handleChange}
                                     />
                                 </div>
                                 <div className="mb-3 input-group input-group-icon">
                                     <span className="input-group-text">
                                         <div className="input-icon">
-                                            {/* SVG Icon */}
+                                            <i className="fas fa-lock"></i>
                                         </div>
                                     </span>
                                     <input
                                         className="form-control dz-password"
                                         type={showPassword ? "text" : "password"}
-                                        name="Password"
-                                        value={formData.Password}
+                                        name="password"
+                                        value={formData.password}
                                         onChange={handleChange}
                                         placeholder="Password"
                                     />
-                                    <span 
-                                        className="input-group-text show-pass" 
+                                    <span
+                                        className="input-group-text show-pass"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
-                                        <i className={`fa ${showPassword ? 'fa-eye' : 'fa-eye-slash'} text-primary`}></i>
+                                        <i
+                                            className={`fa ${
+                                                showPassword ? 'fa-eye' : 'fa-eye-slash'
+                                            } text-primary`}
+                                        ></i>
                                     </span>
                                 </div>
-                                {message && <p className="text-danger">{message}</p>}
                                 <button
                                     type="submit"
                                     className="btn btn-primary btn-block mb-3 btn-rounded"

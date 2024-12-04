@@ -1,16 +1,13 @@
 import axios, { AxiosError } from 'axios';
 
-const API_URL = 'http://10.34.4.203:5001/api/homepage'; // Updated API endpoint
+const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
+const API_URL = `${apiUrl}/api/homepage`; // Updated API endpoint
 
 interface HomepageResponse {
     loggedUser: {
         username: string;
         profilePhoto: string | null;
     };
-    mutualFriends: Array<{
-        username: string;
-        profilePhoto: string | null;
-    }>;
     posts: Array<{
         id: number;
         caption: string;

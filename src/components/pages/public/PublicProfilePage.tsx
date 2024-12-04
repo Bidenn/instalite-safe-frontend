@@ -34,6 +34,7 @@ const PublicProfile: React.FC = () => {
     const navigate = useNavigate();
 
     const token = localStorage.getItem('token');
+    const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
 
     useEffect(() => {
         if (!token) {
@@ -43,8 +44,6 @@ const PublicProfile: React.FC = () => {
                 try {
                     const data = await fetchPublicProfileWithPosts(username); // Fetch profile data for the given username
     
-                    console.log(data);
-
                     if (data.profile) {
                         setUser({
                             username: data.profile.user.username,
@@ -69,16 +68,6 @@ const PublicProfile: React.FC = () => {
         }
     }, [token, username, navigate]);
 
-    const handleFollowUser = () => {
-        // Add follow/unfollow logic here if needed
-        console.log(`Follow button clicked for user: ${user.username}`);
-    };
-
-    const handleUnfollowUser = () => {
-        // Add follow/unfollow logic here if needed
-        console.log(`Follow button clicked for user: ${user.username}`);
-    };
-
     return (
         <div className="page-wraper header-fixed">
             <header className="header">
@@ -93,7 +82,6 @@ const PublicProfile: React.FC = () => {
                     </div>
                 </div>
             </header>
-
             <div className="page-content">
                 <div className="container profile-area">
                     {error && <div className="error-message">{error}</div>}
@@ -106,7 +94,7 @@ const PublicProfile: React.FC = () => {
                             </div>
                             <div className="right-content">
                                 <div className="upload-box">
-                                    <img src={ user.profilePhoto ? `http://10.34.4.203:5001/users/${user.profilePhoto}` : nullPhoto } alt="profile"/>
+                                    <img src={ user.profilePhoto ? `${apiUrl}/users/${user.profilePhoto}` : nullPhoto } alt="profile"/>
                                 </div>
                             </div>
                         </div>
@@ -114,17 +102,14 @@ const PublicProfile: React.FC = () => {
                             <h6>Bio</h6>
                             <p>{user.bio ?? 'No details provided'}</p>
                         </div>
-
-                        {/* Follow Button */}
                     </div>
-
-                    <div className="content-section">
+                    <div className="contant-section">
                         <div className="dz-lightgallery style-2">
                             {posts.length > 0 ? (
                                 posts.map((post) => (
                                     <a key={post.id} className="gallery-box" href={`/post-detail/${post.id}`}>
                                         <img
-                                            src={`http://10.34.4.203:5001/posts/${post.content}`}
+                                            src={`${apiUrl}/posts/${post.content}`}
                                             alt="user post"
                                         />
                                     </a>

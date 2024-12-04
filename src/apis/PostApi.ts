@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
-const API_URL = 'http://10.34.4.203:5001/api/post';
+const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
+const API_URL = `${apiUrl}/api/post`;
 
 // Helper function to retrieve the token from localStorage
 const getAuthToken = (): string | null => {
@@ -60,108 +61,6 @@ export const deletePost = async (postId: string): Promise<DeletePostResponse> =>
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
         return { error: err.response?.data?.error ?? 'Failed to delete post.' };
-    }
-};
-
-// Like a post
-export const likePost = async (postId: string): Promise<CreatePostResponse> => {
-    const token = getAuthToken();
-    if (!token) {
-        return { error: 'User is not authenticated. Please log in.' };
-    }
-
-    try {
-        const response = await axios.post(`${API_URL}/${postId}/like`, {}, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error ?? 'Failed to like post.' };
-    }
-};
-
-// Unlike a post
-export const unlikePost = async (postId: string): Promise<CreatePostResponse> => {
-    const token = getAuthToken();
-    if (!token) {
-        return { error: 'User is not authenticated. Please log in.' };
-    }
-
-    try {
-        const response = await axios.delete(`${API_URL}/${postId}/like`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error ?? 'Failed to unlike post.' };
-    }
-};
-
-// Get the number of likes for a post
-export const getPostLikes = async (postId: string): Promise<{ likeCount?: number; error?: string }> => {
-    try {
-        const response = await axios.get(`${API_URL}/${postId}/likes`);
-        return response.data; // Should return { likeCount: number }
-    } catch (error) {
-        const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error ?? 'Failed to fetch like count.' };
-    }
-};
-
-// Comment on a post
-export const createComment = async (postId: string, content: string): Promise<{ message?: string; error?: string }> => {
-    const token = getAuthToken();
-    if (!token) {
-        return { error: 'User is not authenticated. Please log in.' };
-    }
-
-    try {
-        const response = await axios.post(`${API_URL}/${postId}/comment`, { content }, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error ?? 'Failed to create comment.' };
-    }
-};
-
-// Delete a comment
-export const deleteComment = async (commentId: string): Promise<{ message?: string; error?: string }> => {
-    const token = getAuthToken();
-    if (!token) {
-        return { error: 'User is not authenticated. Please log in.' };
-    }
-
-    try {
-        const response = await axios.delete(`${API_URL}/comment/${commentId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data;
-    } catch (error) {
-        const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error ?? 'Failed to delete comment.' };
-    }
-};
-
-// Get all comments for a post
-export const getPostComments = async (postId: string): Promise<{ comments?: any[]; error?: string }> => {
-    try {
-        const response = await axios.get(`${API_URL}/${postId}/comment`);
-        return response.data; // Should return { comments: array }
-    } catch (error) {
-        const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error ?? 'Failed to fetch comments.' };
     }
 };
 

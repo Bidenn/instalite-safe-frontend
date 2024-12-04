@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 const Register: React.FC = () => {
     const navigate = useNavigate();
 
+    const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
+
     const [formData, setFormData] = useState<{
         email: string;
         password: string;
@@ -79,7 +81,7 @@ const Register: React.FC = () => {
         });
 
         try {
-            const response = await register(formData); // Send `formData` directly to the API
+            const response = await register(formData);
 
             if (response.error) {
                 Swal.fire({

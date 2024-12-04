@@ -17,6 +17,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
+    const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
 
     useEffect(() => {
         const fetchProfile = async () => {

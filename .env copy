@@ -1,1 +1,2 @@
-# REACT_APP_TOKEN_ENCRYPTION_KEY=C15JObWEr0EbIrqKXFvu4RDI9oKhJY2kAy5LP8CgmaY=
+# PORT=3001 (port frontend app)
+# REACT_APP_BACKEND_HOST=http://localhost:5001 (host backend)

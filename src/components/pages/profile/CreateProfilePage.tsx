@@ -53,6 +53,7 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
             try {
                 const result = await checkUsernameAvailability(value);
                 setIsAvailable(result.available);
+                console.log(result);
             } catch {
                 setIsAvailable(null);
             }
