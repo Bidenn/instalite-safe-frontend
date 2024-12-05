@@ -7,8 +7,6 @@ import Swal from 'sweetalert2';
 const Register: React.FC = () => {
     const navigate = useNavigate();
 
-    const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
-
     const [formData, setFormData] = useState<{
         email: string;
         password: string;

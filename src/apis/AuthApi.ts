@@ -24,7 +24,7 @@ export const register = async (payload: { email: string; password: string }): Pr
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Registration failed.' }; // Use `||` for fallback
+        return { error: err.response?.data?.error ?? 'Registration failed.' }; // Use `??` for fallback
     }
 };
 
@@ -34,7 +34,7 @@ export const login = async (payload: { usernameOrEmail: string; password: string
         return response.data;
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
-        return { error: err.response?.data?.error || 'Login failed.' }; // Use `||` for fallback
+        return { error: err.response?.data?.error ?? 'Login failed.' }; // Use `??` for fallback
     }
 };
 

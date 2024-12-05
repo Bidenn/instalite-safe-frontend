@@ -4,7 +4,6 @@ import HomepageHeader from './HomepageHeader';
 import Story from './Story';
 import Postcard from '../post/PostcardComponents';
 import Menubar from '../shared/Menubar';
-import defaultphotopict from '../../assets/images/avatar/NullUserPhoto.png';
 
 import { fetchHomepageData } from '../../../apis/HomepageApi';
 

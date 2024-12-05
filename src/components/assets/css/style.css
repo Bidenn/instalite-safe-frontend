@@ -18228,49 +18228,6 @@ ul.list-check {
   0% {
     transform: rotate(360deg); } }
 
-/*# sourceMappingURL=style.css.map */
-.follow-button-container {
-  margin-top: 20px;
-}
-
-.follow-btn {
-  width: 100%;  /* Make the button wide */
-  padding: 5px;
-  font-size: 12px;
-  background-color: green;  /* Green color for the button */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.unfollow-btn {
-  width: 100%;  /* Make the button wide */
-  padding: 5px;
-  font-size: 12px;
-  background-color: red;  /* Green color for the button */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.unfollow-btn i {
-  margin-right: 10px; /* Space between icon and text */
-}
-
-.follow-btn i {
-  margin-right: 10px; /* Space between icon and text */
-}
-
 .comment-divider {
   border: 0;
   height: 1px;
