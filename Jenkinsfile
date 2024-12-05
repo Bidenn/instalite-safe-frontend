@@ -13,24 +13,6 @@ pipeline {
             }
         }
 
-        stage('Load Environment Variables') {
-            steps {
-                script {
-                    // Load environment variables from the .env file
-                    def envFile = '.env'
-                    if (fileExists(envFile)) {
-                        def props = readProperties file: envFile
-                        props.each { key, value ->
-                            env[key] = value
-                        }
-                        echo 'Environment variables loaded from .env file'
-                    } else {
-                        error '.env file not found. Aborting build.'
-                    }
-                }
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 // Run SonarQube scanner
@@ -64,6 +46,17 @@ pipeline {
 
         stage('Start npm Start Script') {
             steps {
+                // Load environment variables from .env file
+                script {
+                    def envFile = '.env'
+                    if (fileExists(envFile)) {
+                        sh 'export $(cat .env | xargs)'
+                        echo 'Environment variables loaded from .env file'
+                    } else {
+                        error '.env file not found. Aborting build.'
+                    }
+                }
+
                 // Check Node.js and npm versions
                 sh 'node -v'
                 sh 'npm -v'
