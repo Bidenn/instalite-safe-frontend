@@ -56,13 +56,6 @@ pipeline {
             }
         }
 
-        stage('ping'){
-            steps{
-                sh 'ping localhost:3001'
-                sh 'ping 10.34.4.223:3001'
-            }
-        }
-
         // stage('ZAP Scan') {
         //     agent {
         //         docker {
