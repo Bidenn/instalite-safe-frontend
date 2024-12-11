@@ -68,6 +68,12 @@ pipeline {
         }
 
         // Uncomment the following stage if you want to add ZAP scanning
+        stage('ping') {
+            steps {
+                sh 'ping http://localhost:3001'
+            }
+        }
+
         stage('ZAP Scan') {
             agent {
                 docker {
