@@ -13,29 +13,29 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                // Run SonarQube scanner
-                withSonarQubeEnv('SonarQube Server') { // Ensure the correct SonarQube server name is configured
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         // Run SonarQube scanner
+        //         withSonarQubeEnv('SonarQube Server') { // Ensure the correct SonarQube server name is configured
+        //             sh "${scannerHome}/bin/sonar-scanner"
+        //         }
+        //     }
+        // }
 
-        stage("Quality Gate") {
-            steps {
-                // Wait for the SonarQube Quality Gate
-                timeout(time: 30, unit: 'MINUTES') {
-                    script {
-                        try {
-                            waitForQualityGate abortPipeline: true
-                        } catch (Exception e) {
-                            echo 'Quality Gate failed, but continuing the pipeline...'
-                        }
-                    }
-                }
-            }
-        }
+        // stage("Quality Gate") {
+        //     steps {
+        //         // Wait for the SonarQube Quality Gate
+        //         timeout(time: 30, unit: 'MINUTES') {
+        //             script {
+        //                 try {
+        //                     waitForQualityGate abortPipeline: true
+        //                 } catch (Exception e) {
+        //                     echo 'Quality Gate failed, but continuing the pipeline...'
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Stop npm Start Script') {
             steps {
@@ -49,7 +49,6 @@ pipeline {
                 // Check Node.js and npm versions
                 sh 'node -v'
                 sh 'npm -v'
-                sh ''
 
                 // Install dependencies and start the npm start script in detached mode
                 sh 'npm install'
@@ -67,7 +66,7 @@ pipeline {
         //     steps {
         //         // Perform ZAP baseline scan and handle failures gracefully
         //         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-        //             sh 'zap-baseline.py -t http://localhost:3001 -r zapbaseline.html -x zapbaseline.xml'
+        //             sh 'zap-baseline.py -t http://localhost:3000 -r zapbaseline.html -x zapbaseline.xml'
         //         }
 
         //         // Copy and archive the ZAP scan results

@@ -49,10 +49,12 @@ pipeline {
                 // Check Node.js and npm versions
                 sh 'node -v'
                 sh 'npm -v'
+                sh ''
 
                 // Install dependencies and start the npm start script in detached mode
                 sh 'npm install'
                 sh 'nohup npm start > npm-start.log 2>&1 &'
+                sh 'pwd'
             }
         }
 
@@ -66,7 +68,7 @@ pipeline {
         //     steps {
         //         // Perform ZAP baseline scan and handle failures gracefully
         //         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-        //             sh 'zap-baseline.py -t http://localhost:3000 -r zapbaseline.html -x zapbaseline.xml'
+        //             sh 'zap-baseline.py -t http://localhost:3001 -r zapbaseline.html -x zapbaseline.xml'
         //         }
 
         //         // Copy and archive the ZAP scan results
