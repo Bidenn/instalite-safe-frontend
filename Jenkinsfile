@@ -70,7 +70,7 @@ pipeline {
         // Uncomment the following stage if you want to add ZAP scanning
         stage('ping') {
             steps {
-                sh 'ping http://localhost:3001'
+                sh 'ping http://10.34.4.223:3001'
             }
         }
 
@@ -84,7 +84,7 @@ pipeline {
             steps {
                 // Perform ZAP baseline scan and handle failures gracefully
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    sh 'zap-baseline.py -t http://localhost:3001 -r zapbaseline.html -x zapbaseline.xml'
+                    sh 'zap-baseline.py -t http://10.34.4.223:3001 -r zapbaseline.html -x zapbaseline.xml'
                 }
 
                 // Copy and archive the ZAP scan results
