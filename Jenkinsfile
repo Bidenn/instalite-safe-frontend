@@ -46,17 +46,6 @@ pipeline {
 
         stage('Start npm Start Script') {
             steps {
-                // Load environment variables from .env file
-                script {
-                    def envFile = '.env'
-                    if (fileExists(envFile)) {
-                        sh 'export $(cat .env | xargs)'
-                        echo 'Environment variables loaded from .env file'
-                    } else {
-                        error '.env file not found. Aborting build.'
-                    }
-                }
-
                 // Check Node.js and npm versions
                 sh 'node -v'
                 sh 'npm -v'
@@ -64,14 +53,13 @@ pipeline {
                 // Install dependencies and start the npm start script in detached mode
                 sh 'npm install'
                 sh 'nohup npm start > npm-start.log 2>&1 &'
-                sh 'ping localhost:3001'
             }
         }
 
-        // Uncomment the following stage if you want to add ZAP scanning
-        stage('ping') {
-            steps {
-                sh 'ping http://10.34.4.223:3001'
+        stage('ping'){
+            steps{
+                sh 'ping localhost:3001'
+                sh 'ping 10.34.4.223:3001'
             }
         }
 
@@ -85,7 +73,7 @@ pipeline {
         //     steps {
         //         // Perform ZAP baseline scan and handle failures gracefully
         //         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-        //             sh 'zap-baseline.py -t http://10.34.4.223:3001 -r zapbaseline.html -x zapbaseline.xml'
+        //             sh 'zap-baseline.py -t http://localhost:3000 -r zapbaseline.html -x zapbaseline.xml'
         //         }
 
         //         // Copy and archive the ZAP scan results
