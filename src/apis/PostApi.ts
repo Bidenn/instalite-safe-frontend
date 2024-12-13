@@ -65,7 +65,7 @@ export const deletePost = async (postId: string): Promise<DeletePostResponse> =>
 };
 
 // Get detailed post information
-export const getPostDetail = async (postId: string): Promise<{ post?: any; error?: string; isLiked?: any; comments?:any }> => {
+export const getPostDetail = async (postId: string): Promise<{ post?: any; error?: string; logged?: any; comments?:any }> => {
     const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };

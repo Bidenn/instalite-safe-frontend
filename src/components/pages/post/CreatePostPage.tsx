@@ -125,9 +125,9 @@ const CreatePost: React.FC = () => {
                 <div className="container">
                     <div className="main-bar d-flex align-items-center justify-content-between">
                         <div className="left-content d-flex align-items-center">
-                            <button className="back-btn me-3" onClick={() => navigate('/home')}>
+                            <a className="back-btn me-3" onClick={() => navigate('/home')}>
                                 <i className="fa-solid fa-arrow-left"></i>
-                            </button>
+                            </a>
                             <h4 className="title mb-0">Create Post</h4>
                         </div>
                     </div>

@@ -13,6 +13,7 @@ const PostDetail: React.FC = () => {
     const [post, setPost] = useState<any>(null);
     const [photo, setPhoto] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const [logged, setLogged] = useState<any>(null);
 
     useEffect(() => {
         if (!token) {
@@ -24,9 +25,11 @@ const PostDetail: React.FC = () => {
             try {
                 const data = await getPostDetail(postId!);
                 const authorProfile = data.post.authorProfile.profilePhoto;
+                const logged = data.logged;
 
                 setPost(data.post);
                 setPhoto(authorProfile);
+                setLogged(logged);
 
             } catch (err) {
                 console.error('Failed to fetch post details:', err);
@@ -151,6 +154,19 @@ const PostDetail: React.FC = () => {
                                     >
                                         <i className="fa-regular fa-trash-can"></i>
                                     </button>
+                                    {/* {post.userId === logged && (
+                                        <button
+                                            onClick={handleDeletePost}
+                                            className="action-btn d-flex align-items-center me-3"
+                                            style={{
+                                                background: 'transparent',
+                                                border: 'none',
+                                                color: '#000',
+                                            }}
+                                        >
+                                            <i className="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    )} */}
                                 </div>
                             </div>
                         </div>

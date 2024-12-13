@@ -55,11 +55,11 @@ const Profile: React.FC = () => {
                             bio: data.profile.bio,
                         });
     
-                        setPosts(data.posts ?? []); // Assign posts if available
+                        setPosts(data.posts ?? []);
                     } else if ('error' in data) {
-                        setError(data.error); // If there's an error from the API
+                        setError(data.error); 
                     } else {
-                        setError('Unexpected data structure.'); // Catch unexpected structures
+                        setError('Unexpected data structure.'); 
                     }
                 } catch (error) {
                     console.error('Failed to fetch user data with posts:', error);
@@ -71,8 +71,8 @@ const Profile: React.FC = () => {
     }, [token, navigate]);    
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Clear token
-        navigate('/login'); // Redirect to login page
+        localStorage.removeItem('token'); 
+        navigate('/login'); 
     };
 
     return (
@@ -81,9 +81,6 @@ const Profile: React.FC = () => {
                 <div className="container">
                     <div className="main-bar">
                         <div className="left-content">
-                            <a href="/home" className="back-btn">
-                                <i className="fa-solid fa-arrow-left"></i>
-                            </a>
                             <h4 className="title mb-0">Profile</h4>
                         </div>
                         <div className="mid-content">
@@ -107,7 +104,7 @@ const Profile: React.FC = () => {
                             <div className="left-content">
                                 <span>@{user.username}</span>
                                 <h5 className="mt-1">{user.fullName ?? 'Full Name'}</h5>
-                                <h6 className="text-primary font-w400">{user.bio ?? 'bio'}</h6>
+                                <h6 className="text-primary font-w400">{user.career ?? 'career'}</h6>
                             </div>
                             <div className="right-content">
                                 <div className="upload-box">

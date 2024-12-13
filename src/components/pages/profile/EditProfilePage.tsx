@@ -26,8 +26,9 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                 setEmail(result.user.email ?? '');
                 setUsername(result.user.username ?? '');
                 setFullName(result.fullName ?? '');
-                setBio(result.aboutMe ?? '');
+                setBio(result.bio ?? '');
                 setCareer(result.career ?? '');
+                setProfilePhoto(result.profilePhoto ?? '');
             } catch (err) {
                 setError('Failed to fetch user data');
             }
@@ -133,15 +134,15 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                     <div className="main-bar">
                         <div className="left-content">
                             <a href="/profile" className="back-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </a>
                         </div>
                         <div className="mid-content">
                             <h4 className="title mb-0">Edit Profile</h4>
                         </div>
-                        <div className="right-content">
-                            <a href="/profile" className="text-dark font-20">						
-                                <i className="fa-solid fa-check"></i>
+                        <div className="right-content" style={{minWidth:'30px'}}>
+                            <a href="#" className="text-dark font-20">						
+                                <i className="fa-solid fa-check" style={{marginLeft:'15px', width:'35px'}}></i>
                             </a>
                         </div>
                     </div>
@@ -151,7 +152,11 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                 <div className="container">
                     <div className="edit-profile">
                         <div className="profile-image">
-                            <img src={imagePreview} alt="Profile" className="media media-100 rounded-circle" />
+                        <img 
+                            src={profilePhoto ? `${apiUrl}/users/${profilePhoto}` : nullPhoto} 
+                            alt="Profile" 
+                            className="media media-100 rounded-circle" 
+                        />
                             <a href="#" onClick={handleChangeProfilePhoto}>
                                 Change Profile Photo
                             </a>
@@ -165,6 +170,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                         </div>
                         <form onSubmit={handleFormSubmit}>
                             <div className="mb-3">
+                                <p style={{textAlign:'left', marginBottom:'5px'}}>Email</p>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -173,6 +179,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 />
                             </div>
                             <div className="mb-3">
+                                <p style={{textAlign:'left', marginBottom:'5px'}}>Username</p>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -187,6 +194,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 )}
                             </div>
                             <div className="mb-3">
+                                <p style={{textAlign:'left', marginBottom:'5px'}}>Full Name</p>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -196,6 +204,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 />
                             </div>
                             <div className="mb-3">
+                                <p style={{textAlign:'left', marginBottom:'5px'}}>Career</p>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -205,6 +214,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 />
                             </div>
                             <div className="mb-3">
+                                <p style={{textAlign:'left', marginBottom:'5px'}}>Bio</p>
                                 <textarea
                                     className="form-control"
                                     placeholder="About Me"
@@ -213,7 +223,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 />
                             </div>
                             <button type="submit" className="btn btn-primary">
-                                Save Profile
+                                Save Changes
                             </button>
                         </form>
                     </div>

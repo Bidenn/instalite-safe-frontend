@@ -6,13 +6,14 @@ import { searchUsername } from "../../../apis/ProfileApi";
 
 interface Profile {
     username: string;
-    fullName?: string | null; // Full name added
+    fullName?: string | null; 
     profilePhoto: string | null;
 }
 
+const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
+
 const SearchPublicProfile: React.FC = () => {
     const [query, setQuery] = useState<string>(() => {
-        // Initialize state with query from localStorage if available
         return localStorage.getItem("searchQuery") ?? "";
     });
     const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -100,7 +101,7 @@ const SearchPublicProfile: React.FC = () => {
                                     <div className="media media-40 me-2">
                                         <img
                                             className="rounded-circle"
-                                            src={profile.profilePhoto ? `${"http://10.34.4.203:5001/users/" + profile.profilePhoto}` : nullPhoto}
+                                            src={profile.profilePhoto ? `${`${apiUrl}/users/` + profile.profilePhoto}` : nullPhoto}
                                             alt="profile"
                                             style={{ width: "40px", height: "40px" }}
                                         />
