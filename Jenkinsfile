@@ -53,6 +53,7 @@ pipeline {
 
                 // Install dependencies and start the npm start script in detached mode
                 sh 'npm install'
+                sh 'npm install react-scripts --save'
                 sh 'npm install dotenv-expand@5.1.0 --save-dev'
                 sh 'npm install dotenv --save'
 
