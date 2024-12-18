@@ -3,9 +3,8 @@ import axios, { AxiosError } from 'axios';
 const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
 const API_URL = `${apiUrl}/api/post`;
 
-// Helper function to retrieve the token from localStorage
 const getAuthToken = (): string | null => {
-    return localStorage.getItem('token'); // Retrieve token stored as 'token' in localStorage
+    return localStorage.getItem('token'); 
 };
 
 interface CreatePostResponse {
@@ -18,7 +17,6 @@ interface ErrorResponse {
     error: string;
 }
 
-// Store a new post
 export const storePost = async (formData: FormData): Promise<CreatePostResponse> => {
     const token = getAuthToken();
     if (!token) {
@@ -44,7 +42,6 @@ interface DeletePostResponse {
     message?: string;
 }
 
-// Delete a post
 export const deletePost = async (postId: string): Promise<DeletePostResponse> => {
     const token = getAuthToken();
     if (!token) {
@@ -64,8 +61,7 @@ export const deletePost = async (postId: string): Promise<DeletePostResponse> =>
     }
 };
 
-// Get detailed post information
-export const getPostDetail = async (postId: string): Promise<{ post?: any; error?: string; logged?: any; comments?:any }> => {
+export const detailPost = async (postId: string) => {
     const token = getAuthToken();
     if (!token) {
         return { error: 'User is not authenticated. Please log in.' };
@@ -77,9 +73,71 @@ export const getPostDetail = async (postId: string): Promise<{ post?: any; error
                 Authorization: `Bearer ${token}`,
             },
         });
-        return response.data; // Should include post details, user profile info, comments, likes, etc.
+        return response.data; 
     } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
         return { error: err.response?.data?.error ?? 'Failed to fetch post details.' };
+    }
+};
+
+export const toggleLikePost = async (postId: string) => {
+    try {
+        const token = getAuthToken();
+        const response = await axios.post(`${API_URL}/toggle-like`, 
+            { postId },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                },
+            }
+        );
+        return response.data;
+    } catch (error: any) {
+        const err = error as AxiosError<ErrorResponse>;
+        return { error: err.response?.data?.error ?? 'Failed to like post.' };
+    }
+};
+
+export const storeComment = async (postId: string, comment: string) => {
+    const token = getAuthToken();
+    if (!token) {
+        return { error: 'User is not authenticated. Please log in.' };
+    }
+
+    try {
+        const response = await axios.post(`${API_URL}/${postId}/comment`,
+            { postId, comment },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                },
+            }
+        );
+        return response.data;
+    } catch (error: any) {
+        const err = error as AxiosError<ErrorResponse>;
+        return { error: err.response?.data?.error ?? 'Failed to add comment.' };
+    }
+};
+
+
+export const deleteComment = async (commentId: string) => {
+    const token = getAuthToken();
+    if (!token) {
+        return { error: 'User is not authenticated. Please log in.' };
+    }
+
+    try {
+        const response = await axios.delete(`${API_URL}/comment/${commentId}`, 
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                },
+            }
+        );
+        return response.data;
+    } catch (error: any) {
+        const err = error as AxiosError<ErrorResponse>;
+        return { error: err.response?.data?.error ?? 'Failed to delete comment.' };
     }
 };

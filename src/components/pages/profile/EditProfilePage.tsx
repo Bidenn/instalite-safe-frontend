@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
-import { fetchProfileDataForEdit, updateProfileData, checkUsernameAvailability } from '../../../apis/ProfileApi';
+import { fetchEditProfile, updateProfileData, checkUsernameAvailability } from '../../../apis/ProfileApi';
 import nullPhoto from '../../assets/images/avatar/NullUserPhoto.png';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,10 +8,10 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-    const [fullName, setFullName] = useState('');
+    const [fullname, setFullName] = useState('');
     const [bio, setBio] = useState('');
     const [career, setCareer] = useState('');
-    const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
+    const [photo, setProfilePhoto] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [imagePreview, setImagePreview] = useState<string>(nullPhoto);
 
@@ -22,13 +22,14 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const result = await fetchProfileDataForEdit();
-                setEmail(result.user.email ?? '');
-                setUsername(result.user.username ?? '');
-                setFullName(result.fullName ?? '');
+                const result = await fetchEditProfile();
+
+                setEmail(result.email ?? '');
+                setUsername(result.username ?? '');
+                setFullName(result.fullname ?? '');
                 setBio(result.bio ?? '');
                 setCareer(result.career ?? '');
-                setProfilePhoto(result.profilePhoto ?? '');
+                setImagePreview(result.photo ? `${apiUrl}/uploads/users/${result.photo}` : nullPhoto);
             } catch (err) {
                 setError('Failed to fetch user data');
             }
@@ -105,10 +106,10 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
         try {
             const profileData = new FormData();
             profileData.append('username', username);
-            profileData.append('fullName', fullName);
+            profileData.append('fullname', fullname);
             profileData.append('bio', bio);
             profileData.append('career', career);
-            if (profilePhoto) profileData.append('profilePhoto', profilePhoto);
+            if (photo) profileData.append('photo', photo);
 
             await updateProfileData(profileData);
 
@@ -152,11 +153,11 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                 <div className="container">
                     <div className="edit-profile">
                         <div className="profile-image">
-                        <img 
-                            src={profilePhoto ? `${apiUrl}/users/${profilePhoto}` : nullPhoto} 
-                            alt="Profile" 
-                            className="media media-100 rounded-circle" 
-                        />
+                            <img 
+                                src={imagePreview} 
+                                alt="Profile" 
+                                className="media media-100 rounded-circle" 
+                            />
                             <a href="#" onClick={handleChangeProfilePhoto}>
                                 Change Profile Photo
                             </a>
@@ -198,8 +199,8 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Full Name"
-                                    value={fullName}
+                                    placeholder="-"
+                                    value={fullname}
                                     onChange={(e) => setFullName(e.target.value)}
                                 />
                             </div>
@@ -208,7 +209,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Career"
+                                    placeholder="-"
                                     value={career}
                                     onChange={(e) => setCareer(e.target.value)}
                                 />
@@ -217,7 +218,7 @@ const EditProfile: React.FC<{ token: string }> = ({ token }) => {
                                 <p style={{textAlign:'left', marginBottom:'5px'}}>Bio</p>
                                 <textarea
                                     className="form-control"
-                                    placeholder="About Me"
+                                    placeholder="-"
                                     value={bio}
                                     onChange={(e) => setBio(e.target.value)}
                                 />

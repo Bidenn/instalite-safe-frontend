@@ -21,7 +21,7 @@ const IdleTimer: React.FC<IdleTimerProps> = ({ children }) => {
         // Set new timer
         idleTimerRef.current = setTimeout(() => {
             // Remove userId and navigate to login after timeout
-            localStorage.removeItem("userId");
+            localStorage.removeItem("token");
             navigate("/login");
         }, IDLE_TIMEOUT);
     };

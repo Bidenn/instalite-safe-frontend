@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
-import { fetchProfileDataForEdit, updateProfileData, checkUsernameAvailability } from '../../../apis/ProfileApi'; // Adjust the path accordingly
+import { fetchEditProfile, updateProfileData, checkUsernameAvailability } from '../../../apis/ProfileApi'; // Adjust the path accordingly
 import nullPhoto from '../../assets/images/avatar/NullUserPhoto.png';
 import { useNavigate } from 'react-router-dom';
 
 const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
-    const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-    const [fullName, setFullName] = useState('');
+    const [isAvailable, setIsAvailable] = useState<'available' | 'unavailable' | 'invalid' | null>(null);
+    const [fullname, setfullname] = useState('');
     const [bio, setBio] = useState('');
     const [career, setCareer] = useState('');
-    const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
+    const [photo, setphoto] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [imagePreview, setImagePreview] = useState<string>(nullPhoto);
 
@@ -21,10 +21,10 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const result = await fetchProfileDataForEdit();
-                setEmail(result.user.email ?? ''); // Hanya menampilkan email
-                setUsername(result.user.username ?? '');
-                setFullName(result.fullName ?? '');
+                const result = await fetchEditProfile();
+                setEmail(result.email ?? ''); 
+                setUsername(result.username ?? '');
+                setfullname(result.fullname ?? '');
                 setBio(result.aboutMe ?? '');
                 setCareer(result.career ?? '');
             } catch (err) {
@@ -37,32 +37,33 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
 
     const handleUsernameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.toLowerCase();
-        const isValid = /^[a-z0-9._]*$/.test(value);
-
-        if (!isValid) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Username',
-                text: 'Username can only contain lowercase letters, numbers, dots, and underscores.',
-            });
+        setUsername(value);
+    
+        if (value === '') {
+            setIsAvailable(null);
             return;
         }
+    
+        const isValid = /^[a-z0-9_.]+$/.test(value) && !value.endsWith('.');
 
-        setUsername(value);
+        if (!isValid) {
+            setIsAvailable('invalid');
+            return;
+        } 
+    
         if (value.length > 2) {
             try {
                 const result = await checkUsernameAvailability(value);
-                setIsAvailable(result.available);
-                console.log(result);
+                setIsAvailable(result.status);
             } catch {
                 setIsAvailable(null);
             }
         } else {
             setIsAvailable(null);
         }
-    };
+    };    
 
-    const handleChangeProfilePhoto = () => fileInputRef.current?.click();
+    const handleChangephoto = () => fileInputRef.current?.click();
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -86,7 +87,7 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
             return;
         }
 
-        setProfilePhoto(file);
+        setphoto(file);
         setImagePreview(URL.createObjectURL(file));
     };
 
@@ -105,10 +106,10 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
         try {
             const profileData = new FormData();
             profileData.append('username', username);
-            profileData.append('fullName', fullName);
+            profileData.append('fullname', fullname);
             profileData.append('bio', bio);
             profileData.append('career', career);
-            if (profilePhoto) profileData.append('profilePhoto', profilePhoto);
+            if (photo) profileData.append('photo', photo);
 
             await updateProfileData(profileData); // Tidak mengirimkan email
 
@@ -133,7 +134,7 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
                 <div className="container">
                     <div className="main-bar">
                         <div className="mid-content">
-                            <h4 className="title mb-0">Create profile</h4>
+                            <h4 className="title mb-0">Create Profile</h4>
                         </div>
                     </div>
                 </div>
@@ -143,7 +144,7 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
                     <div className="edit-profile">
                         <div className="profile-image">
                             <img src={imagePreview} alt="Profile" className="media media-100 rounded-circle" />
-                            <a href="#" onClick={handleChangeProfilePhoto}>
+                            <a href="#" onClick={handleChangephoto}>
                                 Change Profile Photo
                             </a>
                             <input
@@ -171,9 +172,13 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
                                     value={username}
                                     onChange={handleUsernameChange}
                                 />
-                                {isAvailable === null ? null : isAvailable ? (
+                                {isAvailable === 'invalid' && (
+                                    <span style={{ color: 'orange' }}>Username is invalid</span>
+                                )}
+                                {isAvailable === 'available' && (
                                     <span style={{ color: 'green' }}>Username is available</span>
-                                ) : (
+                                )}
+                                {isAvailable === 'unavailable' && (
                                     <span style={{ color: 'red' }}>Username is taken</span>
                                 )}
                             </div>
@@ -182,8 +187,8 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
                                     type="text"
                                     className="form-control"
                                     placeholder="Full Name"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
+                                    value={fullname}
+                                    onChange={(e) => setfullname(e.target.value)}
                                 />
                             </div>
                             <div className="mb-3">
@@ -198,7 +203,7 @@ const CreateProfile: React.FC<{ token: string }> = ({ token }) => {
                             <div className="mb-3">
                                 <textarea
                                     className="form-control"
-                                    placeholder="About Me"
+                                    placeholder="Bio"
                                     value={bio}
                                     onChange={(e) => setBio(e.target.value)}
                                 />

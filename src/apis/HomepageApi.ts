@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
-const API_URL = `${apiUrl}/api/homepage`; // Updated API endpoint
+const API_URL = `${apiUrl}/api/homepage`;
 
 interface HomepageResponse {
     loggedUser: {
@@ -22,18 +22,11 @@ interface ErrorResponse {
     error: string;
 }
 
-/**
- * Fetch homepage data, including user details, mutual friends, and posts
- * @param token JWT token for authentication
- * @returns A promise resolving to either HomepageResponse or ErrorResponse
- */
-export const fetchHomepageData = async (
-    token: string
-): Promise<HomepageResponse | ErrorResponse> => {
+export const fetchHomepageData = async (token: string): Promise<HomepageResponse | ErrorResponse> => {
     try {
         const response = await axios.get<HomepageResponse>(API_URL, {
             headers: {
-                Authorization: `Bearer ${token}`, // Include token in the Authorization header
+                Authorization: `Bearer ${token}`, 
             },
         });
         return response.data;

@@ -169,10 +169,7 @@ const CreatePost: React.FC = () => {
                                 value={postContent}
                                 onChange={handlePostContentChange}
                                 rows={10}
-                                placeholder="Please write caption.."
-                                style={{
-                                    fontSize: '16px', // Normal font size
-                                }}
+                                placeholder="Caption here.."
                             />
                         </div>
                         <button onClick={handleSubmit} className="btn btn-primary">

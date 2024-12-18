@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../assets/css/style.css';
 import nullPhoto from '../../assets/images/avatar/NullUserPhoto.png';
 import Menubar from '../shared/Menubar';
-import { fetchProfileWithPosts } from '../../../apis/ProfileApi'; 
+import { fetchProfileData } from '../../../apis/ProfileApi'; 
 
 interface UserData {
     username?: string;
@@ -43,21 +43,20 @@ const Profile: React.FC = () => {
         } else {
             const loadUserData = async () => {
                 try {
-                    const data = await fetchProfileWithPosts();
-    
-                    if (data.profile) {
-
+                    const result = await fetchProfileData();
+                    const profile = result.profile;    
+                    if (profile) {
                         setUser({
-                            username: data.profile.user.username,
-                            fullName: data.profile.fullName,
-                            profilePhoto: data.profile.profilePhoto,
-                            career: data.profile.career,
-                            bio: data.profile.bio,
+                            username: profile.username,
+                            fullName: profile.fullname,
+                            profilePhoto: profile.photo,
+                            career: profile.career,
+                            bio: profile.bio,
                         });
     
-                        setPosts(data.posts ?? []);
-                    } else if ('error' in data) {
-                        setError(data.error); 
+                        setPosts(result.posts ?? []);
+                    } else if ('error' in result) {
+                        setError(result.error); 
                     } else {
                         setError('Unexpected data structure.'); 
                     }
@@ -103,15 +102,12 @@ const Profile: React.FC = () => {
                         <div className="main-profile">
                             <div className="left-content">
                                 <span>@{user.username}</span>
-                                <h5 className="mt-1">{user.fullName ?? 'Full Name'}</h5>
-                                <h6 className="text-primary font-w400">{user.career ?? 'career'}</h6>
+                                <h5 className="mt-1">{user.fullName ?? '-'}</h5>
+                                <h6 className="text-primary font-w400">{user.career ?? '-'}</h6>
                             </div>
                             <div className="right-content">
                                 <div className="upload-box">
-                                    <img
-                                        src={ user.profilePhoto ? `${apiUrl}/users/${user.profilePhoto}` : nullPhoto }
-                                        alt="profile"
-                                    />
+                                    <img src={ user.profilePhoto ? `${apiUrl}/uploads/users/${user.profilePhoto}` : nullPhoto } alt="profile" />
                                     <button className="upload-btn" onClick={() => navigate('edit')}>
                                         <i className="fa-solid fa-pencil"></i>
                                     </button>
@@ -119,7 +115,7 @@ const Profile: React.FC = () => {
                             </div>
                         </div>
                         <div className="info">
-                            <h6>About Me</h6>
+                            <h6>Bio</h6>
                             <p>{user.bio ?? 'No details provided'}</p>
                         </div>
                     </div>
@@ -129,13 +125,13 @@ const Profile: React.FC = () => {
                                 posts.map((post) => (
                                     <a key={post.id} className="gallery-box" href={`/posts/${post.id}`}>
                                         <img
-                                            src={`${apiUrl}/posts/${post.content}`}
+                                            src={`${apiUrl}/uploads/posts/${post.content}`}
                                             alt="user post"
                                         />
                                     </a>
                                 ))
                             ) : (
-                                <p></p>
+                                <p>No posts available.</p>
                             )}
                         </div>
                     </div>

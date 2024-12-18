@@ -7,13 +7,11 @@ interface RegisterResponse {
     error?: string;
     message?: string;
 }
-
 interface LoginResponse {
     token?: string; // Token will replace userId
     message?: string;
     error?: string;
 }
-
 interface ErrorResponse {
     error: string;
 }

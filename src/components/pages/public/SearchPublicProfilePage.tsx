@@ -6,8 +6,8 @@ import { searchUsername } from "../../../apis/ProfileApi";
 
 interface Profile {
     username: string;
-    fullName?: string | null; 
-    profilePhoto: string | null;
+    fullname?: string | null; 
+    photo: string | null;
 }
 
 const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
@@ -101,7 +101,7 @@ const SearchPublicProfile: React.FC = () => {
                                     <div className="media media-40 me-2">
                                         <img
                                             className="rounded-circle"
-                                            src={profile.profilePhoto ? `${`${apiUrl}/users/` + profile.profilePhoto}` : nullPhoto}
+                                            src={profile.photo ? `${`${apiUrl}/uploads/users/` + profile.photo}` : nullPhoto}
                                             alt="profile"
                                             style={{ width: "40px", height: "40px" }}
                                         />
@@ -112,19 +112,11 @@ const SearchPublicProfile: React.FC = () => {
                                             style={{
                                                 fontWeight: "bold",
                                                 fontSize: "14px",
-                                                marginBottom: profile.fullName ? "3px" : "0",
+                                                marginBottom: profile.fullname ? "3px" : "0",
                                             }}
                                         >
                                             {profile.username}
                                         </h6>
-                                        {profile.fullName && (
-                                            <p
-                                                className="fullname text-muted mb-0"
-                                                style={{ fontSize: "12px" }}
-                                            >
-                                                {profile.fullName}
-                                            </p>
-                                        )}
                                     </div>
                                 </a>
                             ))}

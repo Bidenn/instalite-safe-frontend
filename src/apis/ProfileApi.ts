@@ -1,14 +1,13 @@
 import axios from 'axios';
 
 const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
-const API_BASE_URL = `${apiUrl}/api/profile`; // Update with your API base URL
+const API_BASE_URL = `${apiUrl}/api/profile`;
 
 const getAuthToken = (): string | null => {
-    return localStorage.getItem('token'); // Retrieve token stored as 'token' in localStorage
+    return localStorage.getItem('token'); 
 };
 
-// Fetch profile data for editing
-export const fetchProfileDataForEdit = async () => {
+export const fetchEditProfile = async () => {
     try {
         const token = getAuthToken();
         const response = await axios.get(`${API_BASE_URL}/edit`, {
@@ -22,8 +21,7 @@ export const fetchProfileDataForEdit = async () => {
     }
 };
 
-// Fetch profile data and posts for profile page
-export const fetchProfileWithPosts = async () => {
+export const fetchProfileData = async () => {
     try {
         const token = getAuthToken();
         const response = await axios.get(`${API_BASE_URL}/`, {
@@ -37,7 +35,6 @@ export const fetchProfileWithPosts = async () => {
     }
 };
 
-// Update user profile data
 export const updateProfileData = async (formData: FormData) => {
     try {
         const token = getAuthToken();
@@ -55,7 +52,6 @@ export const updateProfileData = async (formData: FormData) => {
     }
 };
 
-// Check username availability
 export const checkUsernameAvailability = async (username: string) => {
     try {
         const token = getAuthToken();
@@ -71,8 +67,7 @@ export const checkUsernameAvailability = async (username: string) => {
     }
 };
 
-// Fetch public profile data and posts for profile page
-export const fetchPublicProfileWithPosts = async (username: string) => {
+export const fetchPublicProfile = async (username: string) => {
     try {
         const token = getAuthToken();
         const response = await axios.get(`${API_BASE_URL}/public/${username}`, {

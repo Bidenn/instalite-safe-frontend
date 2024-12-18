@@ -3,12 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import '../../assets/css/style.css';
 import nullPhoto from '../../assets/images/avatar/NullUserPhoto.png';
 import Menubar from '../shared/Menubar';
-import { fetchPublicProfileWithPosts } from '../../../apis/ProfileApi'; 
+import { fetchPublicProfile } from '../../../apis/ProfileApi'; 
 
 interface UserData {
     username?: string;
-    fullName?: string;
-    profilePhoto?: string;
+    fullname?: string;
+    photo?: string;
     career?: string;
     bio?: string;
 }
@@ -23,8 +23,8 @@ const PublicProfile: React.FC = () => {
     const { username } = useParams();
     const [user, setUser] = useState<UserData>({
         username: '',
-        fullName: '',
-        profilePhoto: '',
+        fullname: '',
+        photo: '',
         career: '',
         bio: '',
     });
@@ -42,20 +42,20 @@ const PublicProfile: React.FC = () => {
         } else if (username) {
             const loadUserData = async () => {
                 try {
-                    const data = await fetchPublicProfileWithPosts(username); // Fetch profile data for the given username
+                    const data = await fetchPublicProfile(username); 
     
-                    if (data.profile) {
+                    if (data.user) {
                         setUser({
-                            username: data.profile.user.username,
-                            fullName: data.profile.fullName,
-                            profilePhoto: data.profile.profilePhoto,
-                            career: data.profile.career,
-                            bio: data.profile.bio,
+                            username: data.user.username,
+                            fullname: data.user.fullname,
+                            photo: data.user.photo,
+                            career: data.user.career,
+                            bio: data.user.bio,
                         });
     
-                        setPosts(data.posts ?? []); // Assign posts if available
+                        setPosts(data.posts ?? []); 
                     } else if ('error' in data) {
-                        setError(data.error); // If there's an error from the API
+                        setError(data.error); 
                     } else {
                         setError('Unexpected data structure.'); // Catch unexpected structures
                     }
@@ -89,12 +89,12 @@ const PublicProfile: React.FC = () => {
                         <div className="main-profile">
                             <div className="left-content">
                                 <span>@{user.username}</span>
-                                <h5 className="mt-1">{user.fullName ?? ''}</h5>
+                                <h5 className="mt-1">{user.fullname ?? ''}</h5>
                                 <h6 className="text-primary font-w400">{user.career ?? ''}</h6>
                             </div>
                             <div className="right-content">
                                 <div className="upload-box">
-                                    <img src={ user.profilePhoto ? `${apiUrl}/users/${user.profilePhoto}` : nullPhoto } alt="profile"/>
+                                    <img src={ user.photo ? `${apiUrl}/uploads/users/${user.photo}` : nullPhoto } alt="profile"/>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +109,7 @@ const PublicProfile: React.FC = () => {
                                 posts.map((post) => (
                                     <a key={post.id} className="gallery-box" href={`/posts/${post.id}`}>
                                         <img
-                                            src={`${apiUrl}/posts/${post.content}`}
+                                            src={`${apiUrl}/uploads/posts/${post.content}`}
                                             alt="user post"
                                         />
                                     </a>

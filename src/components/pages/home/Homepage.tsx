@@ -8,28 +8,26 @@ import Menubar from '../shared/Menubar';
 import { fetchHomepageData } from '../../../apis/HomepageApi';
 
 const Homepage: React.FC = () => {
-    const [posts, setPosts] = useState<any[]>([]); // State to store posts
-    const [error, setError] = useState<string | null>(null); // State for error message
-    const [loggedUser, setLoggedUser] = useState<any>(null); // State to store logged-in user
+    const [posts, setPosts] = useState<any[]>([]); 
+    const [error, setError] = useState<string | null>(null); 
+    const [loggedUser, setLoggedUser] = useState<any>(null); 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const token = localStorage.getItem('token'); // Retrieve token from localStorage
+            const token = localStorage.getItem('token'); 
             if (!token) {
-                console.log('User not logged in');
-                navigate('/login'); // Redirect to login if token is not found
+                navigate('/login'); 
                 return;
             }
 
             try {
-                const response = await fetchHomepageData(token); // Pass token to API function
-                console.log(response);
+                const response = await fetchHomepageData(token); 
                 if ('error' in response) {
-                    setError(response.error); // Set error message
+                    setError(response.error);
                 } else {
-                    setPosts(response.posts); // Set posts
-                    setLoggedUser(response.loggedUser); // Set logged user details
+                    setPosts(response.posts);
+                    setLoggedUser(response.loggedUser); 
                 }
             } catch (error) {
                 console.error('Error fetching posts:', error);
@@ -38,40 +36,35 @@ const Homepage: React.FC = () => {
         };
 
         fetchPosts();
-    }, [navigate]); // Dependency array includes navigate to handle navigation updates
+    }, [navigate]); 
 
     const handlePostClick = (postId: string) => {
-        navigate(`/posts/${postId}`); // Navigate to PostDetail page with postId
+        navigate(`/posts/${postId}`); 
     };
 
     return (
         <div className="page-wraper header-fixed">
-            {/* Header Section */}
             <HomepageHeader />
-
             <div className="page-content">
                 <div className="content-inner pt-0">
                     <div className="container p-b50">
-                        {/* Story Section */}
                         {loggedUser && (
                             <Story
-                                userName={loggedUser.username} // Pass username to Story component
-                                profilePhoto={loggedUser.profilePhoto} // Pass profilePhoto to Story component
+                                username={loggedUser.username} 
+                                photo={loggedUser.photo} 
                             />
                         )}
-
-                        {/* Display Posts */}
                         {error && <div className="error-message">{error}</div>}
                         {posts.length > 0 ? (
                             posts.map((post) => (
                                 <Postcard
                                     key={post.id}
                                     postId={post.id}
-                                    userName={post.username} // Handle case where post.user is undefined
-                                    userImage={post.profilePhoto} // Default image if user is missing
+                                    username={post.username} 
+                                    photo={post.photo} 
                                     postContent={post.content}
                                     postCaption={post.caption}
-                                    onClick={() => handlePostClick(post.id)} // Pass click handler
+                                    onClick={() => handlePostClick(post.id)} 
                                     likeCounts='100'
                                     commentCounts='100'
                                 />

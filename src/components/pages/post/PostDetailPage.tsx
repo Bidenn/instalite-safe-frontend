@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPostDetail, deletePost } from '../../../apis/PostApi'; // Add the new like/unlike APIs
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import { detailPost, deletePost, toggleLikePost, deleteComment, storeComment } from '../../../apis/PostApi'; // Add the new like/unlike APIs
+import Swal from 'sweetalert2';
 
 import u1 from '../../assets/images/avatar/NullUserPhoto.png';
 
 const PostDetail: React.FC = () => {
-    const { postId } = useParams();
     const token = localStorage.getItem('token');
+    const { postId } = useParams();
     const navigate = useNavigate();
     const apiUrl: string = process.env.REACT_APP_BACKEND_HOST!;
     const [post, setPost] = useState<any>(null);
-    const [photo, setPhoto] = useState<any>(null);
+    const [authorPhoto, setAuthorPhoto] = useState<any>(null);
+    const [authorUsername, setAuthorUsername] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
-    const [logged, setLogged] = useState<any>(null);
+    const [comments, setComments] = useState<any[]>([]);
+    const [newComment, setNewComment] = useState<string>('');
+    const [liked, setLiked] = useState<boolean>(false); 
+    const [likeCount, setLikeCount] = useState<number>(0); 
 
     useEffect(() => {
         if (!token) {
@@ -23,14 +27,17 @@ const PostDetail: React.FC = () => {
 
         const loadPostDetail = async () => {
             try {
-                const data = await getPostDetail(postId!);
-                const authorProfile = data.post.authorProfile.profilePhoto;
-                const logged = data.logged;
+                const postData = await detailPost(postId!);
+                const postAuthor = postData.post.author;
 
-                setPost(data.post);
-                setPhoto(authorProfile);
-                setLogged(logged);
+                const authorUsername = postAuthor.username;
+                const authorPhoto = postAuthor.photo;
 
+                setPost(postData.post);
+                setAuthorPhoto(authorPhoto);
+                setAuthorUsername(authorUsername);
+                setComments(postData.comments || []); 
+                setLikeCount(postData.totalLikes || 0); 
             } catch (err) {
                 console.error('Failed to fetch post details:', err);
                 setError('An error occurred while fetching post details.');
@@ -74,6 +81,82 @@ const PostDetail: React.FC = () => {
         }
     };
 
+    const handleLikePost = async () => {
+        if (!postId) return; 
+    
+        try {
+            const response = await toggleLikePost(postId);
+            if (response.success) {
+                window.location.reload();
+                setLiked(!liked); 
+                setLikeCount(likeCount + (liked ? -1 : 1)); 
+            }
+        } catch (error) {
+            console.error('Error liking the post:', error);
+        }
+    };
+    
+    const handleCommentSubmit = async () => {
+        if (!newComment.trim() || !postId) return;
+    
+        try {
+            const response = await storeComment(postId, newComment);
+
+            if (response.error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: `Failed to create comment: ${response.error}`,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            } else {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Comment added successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                });
+
+                setComments((prevComments) => [...prevComments, response.comment]); 
+                setNewComment('');
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000); 
+            }
+        } catch (error) {
+            console.error('Error storing comment:', error);
+        }
+    };    
+
+    const handleDeleteComment = async (commentId: string) => {
+        try {
+            const response = await deleteComment(commentId);
+            if (response.error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: `Failed to delete comment: ${response.error}`,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            } else {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Comment deleted successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                });
+            }
+            if (response.success) {
+                setComments((prevComments) =>
+                    prevComments.filter((comment) => comment.id !== commentId)
+                );
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        }
+    };
+
     if (error) return <p>{error}</p>;
     if (!post) return <p>Loading...</p>;
 
@@ -86,7 +169,7 @@ const PostDetail: React.FC = () => {
                             <a href="/home" className="back-btn">
                                 <i className="fa-solid fa-arrow-left"></i>
                             </a>
-                            <h4 className="title mb-0">Instalite</h4>
+                            <h4 className="title mb-0">Instalite Revamp</h4>
                         </div>
                     </div>
                 </div>
@@ -110,7 +193,7 @@ const PostDetail: React.FC = () => {
                             >
                                 <img
                                     className="rounded-circle"
-                                    src={photo ? `${apiUrl}/users/${photo}` : u1}
+                                    src={authorPhoto ? `${apiUrl}/uploads/users/${authorPhoto}` : u1}
                                     alt="User profile"
                                     style={{ width: 30, height: 30 }}
                                 />
@@ -122,8 +205,10 @@ const PostDetail: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="dz-media">
-                        <img src={`${apiUrl}/posts/${post.content}`} alt="Post content" style={{ width: '100%', borderRadius: 0 }} />
+                    <div className="container p-0">
+                        <div className="dz-media">
+                            <img src={`${apiUrl}/uploads/posts/${post.content}`} alt="Post content" style={{ width: '100%', borderRadius: 0 }} />
+                        </div>
                     </div>
                     <div className="container" style={{ paddingLeft: 0, paddingTop: 5, paddingBottom: 0 }}>
                         <div className="post-card" style={{ width: '100%', borderRadius: 0 }}>
@@ -133,24 +218,17 @@ const PostDetail: React.FC = () => {
                                         href="#"
                                         className="action-btn d-flex align-items-center"
                                         style={{ textDecoration: 'none', color: 'red' }}
+                                        onClick={handleLikePost}
                                     >
-                                        <i className="fa-solid fa-heart"></i>
+                                        <i className={`fa-solid fa-heart ${liked ? 'liked' : ''}`}> {likeCount}</i>
                                     </a>
-                                    <a
-                                        href="#"
-                                        className="action-btn d-flex align-items-center"
-                                        style={{ textDecoration: 'none', color: '#000' }}
-                                    >
-                                        <i className="fa-solid fa-comment"></i>
+                                    <a href="#" className="action-btn d-flex align-items-center" style={{ textDecoration: 'none', color: '#000' }}>
+                                        <i className="fa-solid fa-comment"> {comments.length}</i>
                                     </a>
                                     <button
                                         onClick={handleDeletePost}
                                         className="action-btn d-flex align-items-center me-3"
-                                        style={{
-                                            background: 'transparent',
-                                            border: 'none',
-                                            color: '#000',
-                                        }}
+                                        style={{ background: 'transparent', border: 'none', color: '#000' }}
                                     >
                                         <i className="fa-regular fa-trash-can"></i>
                                     </button>
@@ -201,24 +279,49 @@ const PostDetail: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <div className="container profile-area bottom-content">
+                    <ul className="dz-comments-list">
+                        {comments.length > 0 ? (
+                            comments.map((comment) => (
+                                <li key={comment.id}>
+                                    <div className="list-content">
+                                        <img src={comment.user?.photo ? `${apiUrl}/uploads/users/${comment.user?.photo}` : u1} alt="/" />
+                                        <div>
+                                            <h6 className="font-13 mb-1" style={{ textAlign: 'left' }}>{comment.user?.username}</h6>
+                                            <p className="mb-2" style={{fontSize:'12px', textAlign: 'left'}}>{comment.text}</p>
+                                        </div>
+                                    </div>
+                                    <div className="ms-auto">
+                                        <button
+                                            onClick={() => handleDeleteComment(comment.id)}
+                                            className="action-btn d-flex align-items-center me-3"
+                                            style={{ background: 'transparent', border: 'none', color: '#000' }}
+                                        >
+                                            <i className="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </li>
+                            ))
+                        ) : (
+                            <p>No comments available.</p>
+                        )}
+                    </ul>
+                </div>
             </div>
             <footer className="footer fixed border-top">
-                <div className="container py-2">
+                <div className="container p-2">
                     <div className="commnet-footer">
                         <div className="d-flex align-items-center flex-1">
-                            <div className="media media-40 rounded-circle">
-                                <img src={u1} alt="/" />
-                            </div>
                             <form className="flex-1">
-                                <input type="text" className="form-control" placeholder="Add a Comments..." disabled />
+                                <input type="text" className="form-control" placeholder="Add a Comments..." value={newComment} onChange={(e) => setNewComment(e.target.value)}/>
                             </form>
                         </div>
-                        <a href="javascript:void(0);" className="send-btn">
+                        <button className="send-btn" onClick={handleCommentSubmit}>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M21.4499 11.11L3.44989 2.11C3.27295 2.0187 3.07279 1.9823 2.87503 2.00546C2.67728 2.02862 2.49094 2.11029 2.33989 2.24C2.18946 2.37064 2.08149 2.54325 2.02982 2.73567C1.97815 2.9281 1.98514 3.13157 2.04989 3.32L4.99989 12L2.09989 20.68C2.05015 20.8267 2.03517 20.983 2.05613 21.1362C2.07852 21.2894 2.13645 21.4371 2.21816 21.5528C2.29987 21.6686 2.40698 21.7455 2.52489 21.7698C2.64269 21.7941 2.75919 21.7633 2.85989 21.6801L21.8599 12.6801C22.0265 12.5591 22.057 12.3353 21.9315 12.1407C21.8059 11.9461 21.5299 11.8861 21.4499 11.11Z"></path>
+                                <path d="M21.4499 11.11L3.44989 2.11C3.27295 2.0187 3.07279 1.9823 2.87503 2.00546C2.67728 2.02862 2.49094 2.11029 2.33989 2.24C2.18946 2.37064 2.08149 2.54325 2.02982 2.73567C1.97815 2.9281 1.98514 3.13157 2.04989 3.32L4.99989 12L2.09989 20.68C2.05015 20.8267 2.03517 20.983 2.05613 21.1364C2.0771 21.2899 2.13344 21.4364 2.2207 21.5644C2.30797 21.6924 2.42378 21.7984 2.559 21.874C2.69422 21.9496 2.84515 21.9927 2.99989 22C3.15643 21.9991 3.31057 21.9614 3.44989 21.89L21.4499 12.89C21.6137 12.8061 21.7512 12.6786 21.8471 12.5216C21.9431 12.3645 21.9939 12.184 21.9939 12C21.9939 11.8159 21.9431 11.6355 21.8471 11.4784C21.7512 11.3214 21.6137 11.1939 21.4499 11.11ZM4.70989 19L6.70989 13H16.7099L4.70989 19ZM6.70989 11L4.70989 5L16.7599 11H6.70989Z" fill="#40189D"></path>
                             </svg>
-                        </a>
-                    </div>
+                        </button>
+                    </div>    
                 </div>
             </footer>
         </div>
